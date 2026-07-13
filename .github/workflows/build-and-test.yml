@@ -4,7 +4,7 @@ on:
 
 jobs:
   build-and-test:
-    if: ${false}
+    if: ${{false}}
     name: build and test project
     runs-on: ubuntu-latest
     steps:
