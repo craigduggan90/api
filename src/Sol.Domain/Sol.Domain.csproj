@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Sol.Common\Sol.Common.csproj" />
+    <InternalsVisibleTo Include="Sol.Domain.UnitTests" />
+  </ItemGroup>
+
 </Project>

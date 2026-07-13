@@ -8,10 +8,12 @@ namespace Sol.Common.Extensions;
 public static class JsonSerializationExtensions
 {
     /// <summary>Default options applied when serializing objects.</summary>
-    private static JsonSerializerOptions DefaultSerializationOptions => new()
+    private static readonly JsonSerializerOptions DefaultSerializationOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = JsonIgnoreCondition.Never
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
+        PropertyNameCaseInsensitive = true
     };
 
     /// <summary>Parses the text representing a JSON string into an instance of the specified type.</summary>
