@@ -4,7 +4,6 @@ on:
 
 jobs:
   build-and-test:
-    if: ${{false}}
     name: build and test project
     runs-on: ubuntu-latest
     steps:
@@ -16,7 +15,7 @@ jobs:
       - name: ⚙️ setup dotnet
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
           
       - name: 🔨 build solution
         working-directory: src

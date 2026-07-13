@@ -25,6 +25,28 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sol.Domain", "Sol.Domain\So
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sol.Domain.UnitTests", "Sol.Domain.UnitTests\Sol.Domain.UnitTests.csproj", "{85ECB1C3-B90E-481D-8E9E-8AEAFC3A01EF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{2A654DC9-157E-4B71-82B2-8C10F8255797}"
+	ProjectSection(SolutionItems) = preProject
+		..\.commitlintrc.yml = ..\.commitlintrc.yml
+		..\.editorconfig = ..\.editorconfig
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
+		..\package-lock.json = ..\package-lock.json
+		..\package.json = ..\package.json
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github", "Github", "{839012D6-38DF-49DF-8F8A-7E99A456A9DE}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\CODEOWNERS = ..\.github\CODEOWNERS
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{DDB7BB94-0133-4D03-8C1D-8E7AED3A86E8}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\build-and-test.yml = ..\.github\workflows\build-and-test.yml
+		..\.github\workflows\commit-linting.yml = ..\.github\workflows\commit-linting.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -170,5 +192,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{839012D6-38DF-49DF-8F8A-7E99A456A9DE} = {2A654DC9-157E-4B71-82B2-8C10F8255797}
+		{DDB7BB94-0133-4D03-8C1D-8E7AED3A86E8} = {839012D6-38DF-49DF-8F8A-7E99A456A9DE}
 	EndGlobalSection
 EndGlobal
