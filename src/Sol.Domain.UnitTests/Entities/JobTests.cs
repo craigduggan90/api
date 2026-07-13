@@ -1,9 +1,7 @@
-using Sol.Common.Extensions;
 using Sol.Common.Providers.Identifiers;
 using Sol.Common.Providers.Temporal;
 using Sol.Domain.Entities;
 using Sol.Domain.Enums;
-using System.Text.Json;
 
 namespace Sol.Domain.UnitTests.Entities;
 
@@ -11,13 +9,14 @@ public static class JobTests
 {
     public abstract class JobTestsBase
     {
+        protected const string DefaultIdempotencyKey = "DefaultIdempotencyKey";
         protected const JobTypeEnum DefaultType = JobTypeEnum.ArchiveProjectJob;
         protected const string DefaultParameters = """{"foo":"bar"}""";
         protected readonly DateTimeOffset BaseDate = new(2026, 1, 1, 12, 0, 0, TimeSpan.Zero);
 
         protected static Job CreateJob(Action<Job>? setup = null)
         {
-            var job = new Job(DefaultType, DefaultParameters);
+            var job = new Job(DefaultIdempotencyKey, DefaultType, DefaultParameters);
             setup?.Invoke(job);
             return job;
         }
@@ -28,8 +27,9 @@ public static class JobTests
         [Fact]
         public void SetsTypeAndParameters_WhenConstructed()
         {
-            var job = new Job(DefaultType, DefaultParameters);
+            var job = new Job(DefaultIdempotencyKey, DefaultType, DefaultParameters);
 
+            Assert.Equal(DefaultIdempotencyKey, job.IdempotencyKey);
             Assert.Equal(DefaultType, job.Type);
             Assert.Equal(DefaultParameters, job.Parameters);
         }
@@ -52,11 +52,12 @@ public static class JobTests
         }
 
         [Fact]
-        public void SetsLastEventTimeToNull_WhenConstructed()
+        public void SetsLastEventTimeToNow_WhenConstructed()
         {
+            using var _ = new DateTimeOffsetProviderContext(BaseDate);
             var job = CreateJob();
 
-            Assert.Null(job.LastEventTime);
+            Assert.Equal(BaseDate.UtcDateTime, job.LastEventTime);
         }
 
         [Fact]
@@ -83,8 +84,7 @@ public static class JobTests
         [Fact]
         public void SetsParametersToNull_WhenParametersArgumentIsNull()
         {
-            var job = new Job(DefaultType, null);
-
+            var job = new Job(DefaultIdempotencyKey, DefaultType, null);
             Assert.Null(job.Parameters);
         }
     }
@@ -96,7 +96,7 @@ public static class JobTests
         {
             using var _ = new DateTimeOffsetProviderContext(BaseDate);
             var job = CreateJob();
-            var eventTime = DateTimeOffsetProvider.Now.UtcDateTime;
+            var eventTime = DateTimeOffsetProvider.Now.AddMinutes(1).UtcDateTime;
 
             job.Update(eventTime, JobStatusEnum.InProgress, null, null);
 
@@ -121,25 +121,27 @@ public static class JobTests
         [Fact]
         public void DoesNotApplyUpdate_WhenEventTimeIsOlderThanLastEventTime()
         {
-            using var _ = new DateTimeOffsetProviderContext(BaseDate);
-            var firstEventTime = DateTimeOffsetProvider.Now.UtcDateTime;
-            var job = CreateJob(j => j.Update(firstEventTime, JobStatusEnum.Complete, null, null));
-            var staleEventTime = firstEventTime.AddMinutes(-1);
+            using var _ = new DateTimeOffsetProviderContext(BaseDate.AddMinutes(-1));
+            var job = CreateJob();
 
+            job.Update(BaseDate.UtcDateTime, JobStatusEnum.Complete, null, null);
+            
+            var staleEventTime = BaseDate.UtcDateTime.AddMinutes(-2);
             job.Update(staleEventTime, JobStatusEnum.Failed, "SOME_CODE", "some message");
 
             Assert.Equal(JobStatusEnum.Complete, job.Status);
             Assert.Null(job.ErrorCode);
             Assert.Null(job.ErrorMessage);
-            Assert.Equal(firstEventTime, job.LastEventTime);
+            Assert.Equal(BaseDate.UtcDateTime, job.LastEventTime);
         }
 
         [Fact]
         public void DoesNotApplyUpdate_WhenEventTimeEqualsLastEventTime()
         {
             using var _ = new DateTimeOffsetProviderContext(BaseDate);
-            var eventTime = DateTimeOffsetProvider.Now.UtcDateTime;
-            var job = CreateJob(j => j.Update(eventTime, JobStatusEnum.InProgress, null, null));
+            var eventTime = BaseDate.UtcDateTime.AddMinutes(1);
+            var job = CreateJob();
+            job.Update(eventTime, JobStatusEnum.InProgress, null, null);
 
             job.Update(eventTime, JobStatusEnum.Complete, null, null);
 
@@ -151,7 +153,7 @@ public static class JobTests
         {
             using var _ = new DateTimeOffsetProviderContext(BaseDate);
             var job = CreateJob();
-            var eventTime = DateTimeOffsetProvider.Now.UtcDateTime;
+            var eventTime = DateTimeOffsetProvider.Now.UtcDateTime.AddMinutes(1);
 
             job.Update(eventTime, JobStatusEnum.Failed, "SOME_CODE", "some message");
 
@@ -223,8 +225,8 @@ public static class JobTests
         [Fact]
         public void ReflectsCurrentErrorCode_AfterJobFails()
         {
-            var eventTime = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
-            var job = CreateJob(j => j.Update(eventTime, JobStatusEnum.Failed, "SOME_CODE", "some message"));
+            using var _ = new DateTimeOffsetProviderContext(BaseDate);
+            var job = CreateJob(j => j.Update(BaseDate.UtcDateTime.AddMinutes(1), JobStatusEnum.Failed, "SOME_CODE", "some message"));
 
             var serializable = job.AsSerializable();
             var errorCode = serializable.GetType().GetProperty("ErrorCode")!.GetValue(serializable);
