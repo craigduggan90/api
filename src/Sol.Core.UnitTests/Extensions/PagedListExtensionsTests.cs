@@ -7,7 +7,7 @@ namespace Sol.Core.UnitTests.Extensions;
 
 public static class PagedListExtensionsTests
 {
-    private class CursorEntity(long cursor) : IHasCursor
+    private sealed class CursorEntity(long cursor) : IHasCursor
     {
         public long Cursor { get; } = cursor;
     }

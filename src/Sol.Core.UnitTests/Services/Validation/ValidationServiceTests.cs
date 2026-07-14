@@ -6,15 +6,15 @@ namespace Sol.Core.UnitTests.Services.Validation;
 
 public static class ValidationServiceTests
 {
-    private record ValidRequest(string Value);
+    private sealed record ValidRequest(string Value);
 
-    private class ValidRequestValidator : AbstractValidator<ValidRequest>
+    private sealed class ValidRequestValidator : AbstractValidator<ValidRequest>
     {
         public ValidRequestValidator()
             => RuleFor(request => request.Value).NotEmpty();
     }
 
-    private record UnregisteredRequest(string Value);
+    private sealed record UnregisteredRequest(string Value);
 
     private static ValidationService CreateSut()
         => new([new ValidRequestValidator()]);

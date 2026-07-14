@@ -22,7 +22,7 @@ public static class JobsServiceTests
         {
             UnitOfWork.Jobs.Returns(JobsRepository);
             JobsRepository.CreateAsync(Arg.Any<Job>(), Arg.Any<CancellationToken>())
-                .Returns(callInfo => Task.FromResult(callInfo.Arg<Job>()));
+                .Returns(callInfo => Task.FromResult(callInfo.Arg<Job>()!));
         }
 
         protected JobsService CreateSut() => new(Repository, UnitOfWork, Validator);
