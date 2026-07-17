@@ -8,6 +8,12 @@ public class UpdateJobRequestValidator : AbstractValidator<UpdateJobRequest>
 {
     public UpdateJobRequestValidator()
     {
+        RuleFor(request => request.Id)
+            .NotEmpty();
+        
+        RuleFor(request => request.EventTime)
+            .NotEqual(default(DateTime));
+        
         RuleFor(request => request.Status)
             .Must(value => Enum.TryParse<JobStatusEnum>(value, true, out _))
             .WithMessage("Must contain a valid job status.");
@@ -21,6 +27,6 @@ public class UpdateJobRequestValidator : AbstractValidator<UpdateJobRequest>
             .MaximumLength(100);
         
         RuleFor(request => request.ErrorMessage)
-            .MaximumLength(1000);
+            .MaximumLength(255);
     }
 }

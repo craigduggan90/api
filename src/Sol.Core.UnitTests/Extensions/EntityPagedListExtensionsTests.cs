@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Sol.Core.UnitTests.Extensions;
 
-public static class PagedListExtensionsTests
+public static class EntityPagedListExtensionsTests
 {
     private sealed class CursorEntity(long cursor) : IHasCursor
     {

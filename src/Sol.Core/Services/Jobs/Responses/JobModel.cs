@@ -5,9 +5,9 @@ namespace Sol.Core.Services.Jobs.Responses;
 public record JobModel(
     string Id,
     string IdempotencyKey,
-    long Cursor,
     string Type,
     string Status,
+    string? Parameters,
     string? ErrorCode,
     string? ErrorMessage,
     DateTime DateCreated,
@@ -18,9 +18,9 @@ public record JobModel(
         => new(
             Id: job.Id,
             IdempotencyKey: job.IdempotencyKey,
-            Cursor: job.Cursor,
             Type: job.Type.ToString(),
             Status: job.Status.ToString(),
+            Parameters: job.Parameters,
             ErrorCode: job.ErrorCode,
             ErrorMessage: job.ErrorMessage,
             DateCreated: job.DateCreated,

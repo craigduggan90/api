@@ -3,7 +3,7 @@ using Sol.Domain.Interfaces;
 
 namespace Sol.Core.Extensions;
 
-internal static class PagedListExtensions
+internal static class EntityPagedListExtensions
 {
     public static PagedList<TModel> ToPagedList<TEntity, TModel>(this IReadOnlyList<TEntity> list,
         Func<TEntity, TModel> converter) where TEntity : IHasCursor =>

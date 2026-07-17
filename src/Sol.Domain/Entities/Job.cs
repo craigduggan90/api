@@ -14,12 +14,16 @@ public class Job : EntityBase
         LastEventTime = DateCreated;
     }
 
-    public string IdempotencyKey { get; init; }
+    public string IdempotencyKey { get; }
     
     public JobTypeEnum Type { get; init; }
 
     public JobStatusEnum Status { get; private set; } = JobStatusEnum.Pending;
 
+    // LastEventTime defaults to DateCreated rather than null. This keeps LastEventTime non-nullable throughout the
+    // codebase, at the cost of a narrow edge case: if a genuinely-first event's EventTime is at or before DateCreated
+    // (e.g. clock skew between this API and the reporting service), Update's guard will treat it as stale and silently
+    // reject it. Accepted tradeoff — simplicity over a narrow race condition.
     public DateTime LastEventTime { get; private set; }
     
     public string? Parameters { get; init; }
@@ -30,8 +34,6 @@ public class Job : EntityBase
     
     public override object AsSerializable()
         => new { Id, IdempotencyKey, Type, Status, ErrorCode, DateCreated, DateModified, LastEventTime };
-
-    public override string ToString() => AsSerializable().Serialize();
 
     public void Update(
         DateTime eventTime,

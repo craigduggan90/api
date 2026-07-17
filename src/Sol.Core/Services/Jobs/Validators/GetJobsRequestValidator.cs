@@ -11,6 +11,7 @@ public class GetJobsRequestValidator : AbstractValidator<GetJobsRequest>
     {
         RuleFor(request => request.Cursor)
             .Must(value => value.TryDecodeCursor(out _))
+            .When(request => request.Cursor is not null)
             .WithMessage("Invalid cursor value.");
 
         RuleFor(request => request.Type)
