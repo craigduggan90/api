@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\V1\Common\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Sol.Core\Sol.Core.csproj" />
     <ProjectReference Include="..\Sol.Data\Sol.Data.csproj" />
   </ItemGroup>
 
