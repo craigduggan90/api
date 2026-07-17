@@ -1,5 +1,5 @@
-using Sol.Api.Client.V1.RequestModels;
-using Sol.Api.Client.V1.ResponseModels;
+using Sol.Api.Contracts.V1.RequestModels;
+using Sol.Api.Contracts.V1.ResponseModels;
 using Sol.Core.Services.Jobs.Requests;
 using Sol.Core.Services.Jobs.Responses;
 

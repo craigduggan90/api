@@ -49,7 +49,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sol.Api.Swagger", "Sol.Api.Swagger\Sol.Api.Swagger.csproj", "{8AF096EA-1516-4E76-AA25-3C2B3B54646F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sol.Api.Client", "Sol.Api.Client\Sol.Api.Client.csproj", "{9298BE4D-DC25-44D8-95AD-995A281227C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sol.Api.Contracts", "Sol.Api.Contracts\Sol.Api.Contracts.csproj", "{9298BE4D-DC25-44D8-95AD-995A281227C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

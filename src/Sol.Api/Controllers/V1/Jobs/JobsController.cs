@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Sol.Api.Client.V1.RequestModels;
+using Sol.Api.Contracts.V1.RequestModels;
 using Sol.Common.Extensions;
 using Sol.Core.Services.Jobs;
 

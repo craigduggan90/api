@@ -1,4 +1,4 @@
-namespace Sol.Api.Client.V1;
+namespace Sol.Api.Contracts.V1;
 
 public interface IJobsApi
 {
