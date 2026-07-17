@@ -1,17 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
+using Sol.Api.Client.V1.RequestModels;
+using Sol.Common.Extensions;
+using Sol.Core.Services.Jobs;
 
 namespace Sol.Api.Controllers.V1.Jobs;
 
 [ApiController]
 [Route("api/[controller]")]
-public class JobsController() : ControllerBase
+public class JobsController(IJobsService jobsService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetJobs(
-        [FromQuery] object request,
+        [FromQuery] GetJobsRequestModel query,
         CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var result = await jobsService.GetJobsAsync(query.ToGetJobsRequestRequest(), cancellationToken);
+        return Ok(result.Map(JobsMapper.ToJobResponseModel));
     }
     
     [HttpGet("{id}")]
