@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Sol.Api.Client\Sol.Api.Client.csproj" />
+    <ProjectReference Include="..\Sol.Api.Swagger\Sol.Api.Swagger.csproj" />
     <ProjectReference Include="..\Sol.Core\Sol.Core.csproj" />
     <ProjectReference Include="..\Sol.Data\Sol.Data.csproj" />
   </ItemGroup>
