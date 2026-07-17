@@ -1,4 +1,4 @@
-namespace Sol.Api.Controllers.V1.Jobs.RequestModels;
+namespace Sol.Api.Client.V1.RequestModels;
 
 public record UpdateJobRequestModel(
     string EventId,
