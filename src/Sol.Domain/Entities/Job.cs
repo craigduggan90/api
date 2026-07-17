@@ -16,7 +16,7 @@ public class Job : EntityBase
 
     public string IdempotencyKey { get; }
     
-    public JobTypeEnum Type { get; init; }
+    public JobTypeEnum Type { get; }
 
     public JobStatusEnum Status { get; private set; } = JobStatusEnum.Pending;
 
@@ -26,7 +26,7 @@ public class Job : EntityBase
     // reject it. Accepted tradeoff — simplicity over a narrow race condition.
     public DateTime LastEventTime { get; private set; }
     
-    public string? Parameters { get; init; }
+    public string? Parameters { get; }
     
     public string? ErrorCode { get; private set; }
     
