@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using Sol.Api.Contracts.V1.RequestModels;
 using Sol.Api.Contracts.V1.ResponseModels;
 using Sol.Api.Controllers.V1.Jobs;
+using Sol.Common;
 using Sol.Common.Extensions;
 using Sol.Common.Pagination;
 using Sol.Common.Providers.Identifiers;
@@ -25,7 +27,13 @@ public static class JobsControllerTests
     {
         protected readonly IJobsService JobsService = Substitute.For<IJobsService>();
 
-        protected JobsController CreateSut() => new(JobsService);
+        private JobsController? _sut;
+        
+        protected JobsController GetOrCreateSut() => 
+            _sut ??= new JobsController(JobsService)
+            {
+                ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
+            };
 
         protected JobModel GetJobModel(
             string? id = null,
@@ -50,6 +58,20 @@ public static class JobsControllerTests
                 DateTimeOffsetProvider.Now.UtcDateTime,
                 DateTimeOffsetProvider.Now.UtcDateTime);
         }
+
+        protected static void AssertResultValue<TResult, TValue>(IActionResult result, TValue expected)
+            where TResult : ObjectResult
+        {
+            var objectResult = Assert.IsType<TResult>(result);
+            var actual = Assert.IsType<TValue>(objectResult.Value);
+            Assert.Equivalent(expected, actual);
+        }
+
+        protected void AssertEtagSet(string expected)
+        {
+            GetOrCreateSut().Response.Headers.TryGetValue(Constants.ETagHeaderKey, out var actual);
+            Assert.Equal(expected,  Assert.Single(actual)?.Trim('"'));
+        }
     }
     
     public class GetJobs : JobControllerTestsBase
@@ -65,12 +87,10 @@ public static class JobsControllerTests
 
             var expected = serviceResponse.Map<JobModel, JobResponseModel>(x => x.ToJobResponseModel());
 
-            var sut = CreateSut();
+            var sut = GetOrCreateSut();
             var rawResult = await sut.GetJobs(request, TestContext.Current.CancellationToken);
 
-            var okResult = Assert.IsType<OkObjectResult>(rawResult);
-            var actual = Assert.IsType<PagedList<JobResponseModel>>(okResult.Value);
-            Assert.Equivalent(expected, actual);
+            AssertResultValue<OkObjectResult, PagedList<JobResponseModel>>(rawResult, expected);
             
             await JobsService.Received(1).GetJobsAsync(Arg.Any<GetJobsRequest>(), Arg.Any<CancellationToken>());
         }
@@ -89,12 +109,11 @@ public static class JobsControllerTests
 
             var expected = jobModel.ToJobResponseDetailModel();
 
-            var sut = CreateSut();
+            var sut = GetOrCreateSut();
             var rawResult = await sut.GetJobById(id, TestContext.Current.CancellationToken);
 
-            var okResult = Assert.IsType<OkObjectResult>(rawResult);
-            var actual = Assert.IsType<JobResponseDetailModel>(okResult.Value);
-            Assert.Equivalent(expected, actual);
+            AssertResultValue<OkObjectResult, JobResponseDetailModel>(rawResult, expected);
+            AssertEtagSet(jobModel.ConcurrencyToken);
 
             await JobsService.Received(1).GetJobByIdAsync(Arg.Is<string>(s => s == id), Arg.Any<CancellationToken>());
         }
@@ -116,12 +135,11 @@ public static class JobsControllerTests
 
             var expected = jobModel.ToJobResponseModel();
 
-            var sut = CreateSut();
+            var sut = GetOrCreateSut();
             var rawResult = await sut.CreateJob(requestModel, idempotencyKey, TestContext.Current.CancellationToken);
-
-            var okResult = Assert.IsType<AcceptedAtActionResult>(rawResult);
-            var actual = Assert.IsType<JobResponseModel>(okResult.Value);
-            Assert.Equivalent(expected, actual);
+            
+            AssertResultValue<AcceptedAtActionResult, JobResponseModel>(rawResult, expected);
+            AssertEtagSet(jobModel.ConcurrencyToken);
 
             await JobsService.Received(1).CreateJobAsync(Arg.Is<CreateJobRequest>(r => r.IdempotencyKey == idempotencyKey), Arg.Any<CancellationToken>());
         }
@@ -143,12 +161,11 @@ public static class JobsControllerTests
 
             var expected = jobModel.ToJobResponseModel();
 
-            var sut = CreateSut();
+            var sut = GetOrCreateSut();
             var rawResult = await sut.UpdateJob(id, concurrencyToken, requestModel, TestContext.Current.CancellationToken);
 
-            var okResult = Assert.IsType<OkObjectResult>(rawResult);
-            var actual = Assert.IsType<JobResponseModel>(okResult.Value);
-            Assert.Equivalent(expected, actual);
+            AssertResultValue<OkObjectResult, JobResponseModel>(rawResult, expected);
+            AssertEtagSet(jobModel.ConcurrencyToken);
 
             await JobsService.Received(1)
                 .UpdateJobAsync(Arg.Is<UpdateJobRequest>(r => r.Id == id && r.ConcurrencyToken == concurrencyToken),
