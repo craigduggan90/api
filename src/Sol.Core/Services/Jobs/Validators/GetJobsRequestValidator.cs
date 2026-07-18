@@ -17,16 +17,16 @@ public class GetJobsRequestValidator : AbstractValidator<GetJobsRequest>
         RuleFor(request => request.Type)
             .Must(value => Enum.TryParse<JobTypeEnum>(value, true, out _))
             .When(request => request.Type is not null)
-            .WithMessage("Must contain a valid job type.");
+            .WithMessage("Must contain a valid Type.");
 
         RuleFor(request => request.Status)
             .Must(value => Enum.TryParse<JobStatusEnum>(value, true, out _))
             .When(request => request.Status is not null)
-            .WithMessage("Must contain a valid job status.");
+            .WithMessage("Must contain a valid Status.");
 
         RuleFor(request => request.PageSize)
             .GreaterThan(0)
-            .LessThan(100)
+            .LessThanOrEqualTo(100)
             .When(request => request.PageSize is not null);
     }
 }
