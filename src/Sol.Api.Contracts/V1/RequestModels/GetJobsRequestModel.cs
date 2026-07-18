@@ -4,8 +4,6 @@ public record GetJobsRequestModel(
     string? Type = null,
     string? Status = null,
     string? ErrorCode = null,
-    DateTime? LastEventFrom = null,
-    DateTime? LastEventTo = null,
     DateTime? CreatedFrom = null,
     DateTime? CreatedTo = null,
     DateTime? ModifiedFrom = null,

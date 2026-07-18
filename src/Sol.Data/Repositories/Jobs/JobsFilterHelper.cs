@@ -32,22 +32,4 @@ public static class JobsFilterHelper
         => value is null
             ? queryable
             : queryable.Where(job => job.ErrorCode == value);
-    
-    /// <summary>Filters a collection of <typeparamref name="T"/> objects by minimum last even time.(inclusive).</summary>
-    /// <param name="queryable">The collection to filter.</param>
-    /// <param name="value">The value to filter by.</param>
-    /// <returns>A reference to the queryable after the filter operation.</returns>
-    public static IQueryable<Job> ApplyLastEventTimeFromFilter(this IQueryable<Job> queryable, DateTime? value)
-        => value == null
-            ? queryable
-            : queryable.Where(instance => instance.LastEventTime >= value.Value);
-
-    /// <summary>Filters a collection of <typeparamref name="T"/> objects by last event time (exclusive).</summary>
-    /// <param name="queryable">The collection to filter.</param>
-    /// <param name="value">The value to filter by.</param>
-    /// <returns>A reference to the queryable after the filter operation.</returns>
-    public static IQueryable<Job> ApplyLastEventTimeToFilter(this IQueryable<Job> queryable, DateTime? value)
-        => value == null
-            ? queryable
-            : queryable.Where(instance => instance.LastEventTime < value.Value);
 }

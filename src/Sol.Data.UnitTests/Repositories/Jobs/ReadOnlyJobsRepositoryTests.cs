@@ -112,37 +112,6 @@ public static class ReadOnlyJobsRepositoryTests
         }
 
         [Fact]
-        public async Task ShouldReturnFilteredPage_WhenLastEventFromProvided()
-        {
-            var lastEventFrom = BaseDate.AddDays(10).AddYears(1);
-            var expected = Context.Jobs.Where(j => j.LastEventTime >= lastEventFrom)
-                .OrderBy(j => j.Cursor)
-                .Take(Constants.DefaultPageSize);
-
-            var sut = CreateSut();
-            var actual = await sut.GetAsync(
-                lastEventFrom: lastEventFrom,
-                cancellationToken: TestContext.Current.CancellationToken);
-
-            Assert.Equivalent(expected, actual, true);
-        }
-
-        [Fact]
-        public async Task ShouldReturnFilteredPage_WhenLastEventToProvided()
-        {
-            var lastEventTo = BaseDate.AddDays(15).AddYears(1);
-            var expected = Context.Jobs.Where(j => j.LastEventTime < lastEventTo)
-                .OrderBy(j => j.Cursor);
-
-            var sut = CreateSut();
-            var actual = await sut.GetAsync(
-                lastEventTo: lastEventTo,
-                cancellationToken: TestContext.Current.CancellationToken);
-
-            Assert.Equivalent(expected, actual, true);
-        }
-
-        [Fact]
         public async Task ShouldReturnFilteredPage_WhenCreatedFromProvided()
         {
             var createdFrom = BaseDate.AddDays(10);

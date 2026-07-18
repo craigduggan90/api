@@ -11,8 +11,7 @@ public record JobModel(
     string? ErrorCode,
     string? ErrorMessage,
     DateTime DateCreated,
-    DateTime DateModified,
-    DateTime LastEventTime)
+    DateTime DateModified)
 {
     public static JobModel FromEntity(Job job)
         => new(
@@ -24,6 +23,5 @@ public record JobModel(
             ErrorCode: job.ErrorCode,
             ErrorMessage: job.ErrorMessage,
             DateCreated: job.DateCreated,
-            DateModified: job.DateModified,
-            LastEventTime: job.LastEventTime);
+            DateModified: job.DateModified);
 };

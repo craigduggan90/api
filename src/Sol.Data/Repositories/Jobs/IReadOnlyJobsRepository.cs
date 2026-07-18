@@ -16,8 +16,6 @@ public interface IReadOnlyJobsRepository : IReadOnlyRepository<Job>
     /// <param name="type">Limit results to records matching this type.</param>
     /// <param name="status">Limit results to records with this status.</param>
     /// <param name="errorCode">Limit results to records with this error code.</param>
-    /// <param name="lastEventFrom">Limit results to entities with a last event timestamp on or after this date.</param>
-    /// <param name="lastEventTo">Limit results to entities with a last event timestamp before this date.</param>
     /// <param name="dateFilter">Limit results to records matching this date filter.</param>
     /// <param name="pagination">Limit results to a page matching this pagination filter.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
@@ -25,8 +23,6 @@ public interface IReadOnlyJobsRepository : IReadOnlyRepository<Job>
         JobTypeEnum? type = null,
         JobStatusEnum? status = null,
         string? errorCode = null,
-        DateTime? lastEventFrom = null,
-        DateTime? lastEventTo = null,
         DateFilter? dateFilter = null,
         PaginationFilter? pagination = null,
         CancellationToken cancellationToken = default);

@@ -11,7 +11,6 @@ public class Job : EntityBase
         IdempotencyKey = idempotencyKey;
         Type = type;
         Parameters = parameters;
-        LastEventTime = DateCreated;
     }
 
     public string IdempotencyKey { get; }
@@ -19,12 +18,6 @@ public class Job : EntityBase
     public JobTypeEnum Type { get; }
 
     public JobStatusEnum Status { get; private set; } = JobStatusEnum.Pending;
-
-    // LastEventTime defaults to DateCreated rather than null. This keeps LastEventTime non-nullable throughout the
-    // codebase, at the cost of a narrow edge case: if a genuinely-first event's EventTime is at or before DateCreated
-    // (e.g. clock skew between this API and the reporting service), Update's guard will treat it as stale and silently
-    // reject it. Accepted tradeoff — simplicity over a narrow race condition.
-    public DateTime LastEventTime { get; private set; }
     
     public string? Parameters { get; }
     
@@ -33,7 +26,7 @@ public class Job : EntityBase
     public string? ErrorMessage { get; private set; }
     
     public override object AsSerializable()
-        => new { Id, IdempotencyKey, Type, Status, ErrorCode, DateCreated, DateModified, LastEventTime };
+        => new { Id, IdempotencyKey, Type, Status, ErrorCode, DateCreated, DateModified };
 
     public void Update(
         DateTime eventTime,
@@ -41,13 +34,9 @@ public class Job : EntityBase
         string? errorCode, 
         string? errorMessage)
     {
-        if (LastEventTime >= eventTime)
-            return;
-        
         UpdateProperty(nameof(Status), status);
         UpdateProperty(nameof(ErrorCode), errorCode);
         UpdateProperty(nameof(ErrorMessage), errorMessage);
-        UpdateProperty(nameof(LastEventTime), eventTime);
     }
 
     public void Delete()

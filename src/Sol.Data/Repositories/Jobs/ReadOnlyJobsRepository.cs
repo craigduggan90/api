@@ -25,8 +25,6 @@ public class ReadOnlyJobsRepository(ApiDbContext context) : RepositoryBase(conte
         JobTypeEnum? type = null, 
         JobStatusEnum? status = null, 
         string? errorCode = null,
-        DateTime? lastEventFrom = null, 
-        DateTime? lastEventTo = null, 
         DateFilter? dateFilter = null,
         PaginationFilter? pagination = null, 
         CancellationToken cancellationToken = default)
@@ -34,8 +32,6 @@ public class ReadOnlyJobsRepository(ApiDbContext context) : RepositoryBase(conte
             .ApplyTypeFilter(type)
             .ApplyStatusFilter(status)
             .ApplyErrorCodeFilter(errorCode)
-            .ApplyLastEventTimeFromFilter(lastEventFrom)
-            .ApplyLastEventTimeToFilter(lastEventTo)
             .ApplyCreatedFromFilter(dateFilter?.CreatedFrom)
             .ApplyCreatedToFilter(dateFilter?.CreatedTo)
             .ApplyModifiedFromFilter(dateFilter?.ModifiedFrom)

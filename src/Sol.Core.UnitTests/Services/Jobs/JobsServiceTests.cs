@@ -65,16 +65,22 @@ public static class JobsServiceTests
             var sut = CreateSut();
             var request = new GetJobsRequest(Type: "ArchiveProjectJob", Status: "Failed");
             Repository.GetAsync(
-                    Arg.Any<JobTypeEnum?>(), Arg.Any<JobStatusEnum?>(), Arg.Any<string?>(),
-                    Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<Data.Models.DateFilter>(),
-                    Arg.Any<Data.Models.PaginationFilter>(), Arg.Any<CancellationToken>())
+                    Arg.Any<JobTypeEnum?>(), 
+                    Arg.Any<JobStatusEnum?>(), 
+                    Arg.Any<string?>(),
+                     Arg.Any<Data.Models.DateFilter>(),
+                    Arg.Any<Data.Models.PaginationFilter>(), 
+                    Arg.Any<CancellationToken>())
                 .Returns([]);
 
             await sut.GetJobsAsync(request, TestContext.Current.CancellationToken);
 
             await Repository.Received(1).GetAsync(
-                JobTypeEnum.ArchiveProjectJob, JobStatusEnum.Failed, null, null, null,
-                Arg.Any<Data.Models.DateFilter>(), Arg.Any<Data.Models.PaginationFilter>(),
+                JobTypeEnum.ArchiveProjectJob, 
+                JobStatusEnum.Failed, 
+                null,
+                Arg.Any<Data.Models.DateFilter>(), 
+                Arg.Any<Data.Models.PaginationFilter>(),
                 Arg.Any<CancellationToken>());
         }
 
@@ -85,9 +91,12 @@ public static class JobsServiceTests
             var request = new GetJobsRequest();
             var job = CreateJob();
             Repository.GetAsync(
-                    Arg.Any<JobTypeEnum?>(), Arg.Any<JobStatusEnum?>(), Arg.Any<string?>(),
-                    Arg.Any<DateTime?>(), Arg.Any<DateTime?>(), Arg.Any<Data.Models.DateFilter>(),
-                    Arg.Any<Data.Models.PaginationFilter>(), Arg.Any<CancellationToken>())
+                    Arg.Any<JobTypeEnum?>(), 
+                    Arg.Any<JobStatusEnum?>(), 
+                    Arg.Any<string?>(), 
+                    Arg.Any<Data.Models.DateFilter>(),
+                    Arg.Any<Data.Models.PaginationFilter>(), 
+                    Arg.Any<CancellationToken>())
                 .Returns([job]);
 
             var result = await sut.GetJobsAsync(request, TestContext.Current.CancellationToken);
@@ -221,47 +230,6 @@ public static class JobsServiceTests
 
             await Assert.ThrowsAsync<NotFoundException>(() =>
                 sut.UpdateJobAsync(request, TestContext.Current.CancellationToken));
-        }
-
-        [Fact]
-        public async Task UpdatesAndSavesJob_WhenEventIsNewerThanLastEventTime()
-        {
-            var sut = CreateSut();
-            var job = CreateJob();
-            JobsRepository.GetByIdAsync(job.Id, Arg.Any<CancellationToken>()).Returns(job);
-            var request = new UpdateJobRequest(job.Id, DateTime.UtcNow, "InProgress", null, null);
-
-            await sut.UpdateJobAsync(request, TestContext.Current.CancellationToken);
-
-            await JobsRepository.Received(1).UpdateAsync(job, Arg.Any<CancellationToken>());
-            await UnitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
-        }
-
-        [Fact]
-        public async Task DoesNotSave_WhenUpdateIsStaleAndJobIsNotDirty()
-        {
-            var sut = CreateSut();
-            var job = CreateJob();
-            var lastEventTime = DateTime.UtcNow;
-            SeedPersistedState(job, lastEventTime, JobStatusEnum.InProgress);
-            JobsRepository.GetByIdAsync(job.Id, Arg.Any<CancellationToken>()).Returns(job);
-            var staleRequest = new UpdateJobRequest(job.Id, lastEventTime.AddMinutes(-1), "Failed", "ERR", "msg");
-
-            var result = await sut.UpdateJobAsync(staleRequest, TestContext.Current.CancellationToken);
-
-            await JobsRepository.DidNotReceive().UpdateAsync(Arg.Any<Job>(), Arg.Any<CancellationToken>());
-            await UnitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
-            Assert.Equal(JobStatusEnum.InProgress, job.Status);
-            Assert.Equal(job.Id, result.Id);
-        }
-        
-        private static void SeedPersistedState(Job job, DateTime lastEventTime, JobStatusEnum status)
-        {
-            // Mirrors how EF materializes an entity from the database — direct property assignment,
-            // bypassing UpdateProperty so IsDirty isn't polluted by this test setup, matching a genuinely
-            // freshly-loaded (not yet mutated in-process) entity.
-            typeof(Job).GetProperty(nameof(Job.LastEventTime))!.SetValue(job, lastEventTime);
-            typeof(Job).GetProperty(nameof(Job.Status))!.SetValue(job, status);
         }
     }
 }

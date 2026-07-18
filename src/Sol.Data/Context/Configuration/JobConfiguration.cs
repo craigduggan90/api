@@ -37,10 +37,6 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
                 entity => (int)entity, 
                 stored => (JobTypeEnum)stored);
         
-        builder.Property(entity => entity.LastEventTime)
-            .HasColumnName("last_event_at")
-            .HasConversion<UtcDateTimeConverter>();
-        
         builder.Property(entity => entity.Parameters)
             .HasColumnName("parameters")
             .HasMaxLength(1000);

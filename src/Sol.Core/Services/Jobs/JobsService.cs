@@ -27,8 +27,6 @@ public class JobsService(IReadOnlyJobsRepository repository, IUnitOfWork unitOfW
             type,
             status,
             request.ErrorCode,
-            request.LastEventFrom,
-            request.LastEventTo,
             new DateFilter(request.CreatedFrom, request.CreatedTo, request.ModifiedFrom, request.ModifiedTo),
             new PaginationFilter(cursor, request.PageSize),
             cancellationToken);

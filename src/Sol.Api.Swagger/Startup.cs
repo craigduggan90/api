@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
+using Sol.Api.Swagger.Examples.V1.Jobs;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace Sol.Api.Swagger;
 
@@ -17,7 +19,10 @@ public static class Startup
                 Version = "v1",
                 Description = "A facade API for enqueuing and tracking long-running jobs."
             });
+            options.ExampleFilters();
         });
+    
+        builder.Services.AddSwaggerExamplesFromAssemblyOf<JobResponseModelExample>();
 
         return builder;
     }
