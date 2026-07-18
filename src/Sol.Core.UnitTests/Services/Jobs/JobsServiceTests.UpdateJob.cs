@@ -69,5 +69,33 @@ public static partial class JobsServiceTests
 
             Assert.Null(exception);
         }
+        
+        [Fact]
+        public async Task DoesNotSave_WhenJobHasNotChanged()
+        {
+            var sut = CreateSut();
+            var job = CreateJob();
+            JobsRepository.GetByIdAsync(job.Id, Arg.Any<CancellationToken>()).Returns(job);
+            var request = new UpdateJobRequest(job.Id, job.ConcurrencyToken, "Pending", null, null);
+
+            await sut.UpdateJobAsync(request, TestContext.Current.CancellationToken);
+
+            await JobsRepository.DidNotReceive().UpdateAsync(Arg.Any<Job>(), Arg.Any<CancellationToken>());
+            await UnitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
+        }
+
+        [Fact]
+        public async Task ReturnsCurrentState_WhenJobHasNotChanged()
+        {
+            var sut = CreateSut();
+            var job = CreateJob();
+            JobsRepository.GetByIdAsync(job.Id, Arg.Any<CancellationToken>()).Returns(job);
+            var request = new UpdateJobRequest(job.Id, job.ConcurrencyToken, "Pending", null, null);
+
+            var result = await sut.UpdateJobAsync(request, TestContext.Current.CancellationToken);
+
+            Assert.Equal(job.Id, result.Id);
+            Assert.Equal("Pending", result.Status);
+        }
     }
 }

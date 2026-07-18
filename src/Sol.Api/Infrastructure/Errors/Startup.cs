@@ -13,6 +13,7 @@ public static class Startup
             .AddExceptionHandler<NotFoundExceptionHandler>()
             .AddExceptionHandler<ValidationExceptionHandler>()
             .AddExceptionHandler<UnhandledExceptionHandler>()
+            .AddExceptionHandler<ConcurrencyTokenMismatchExceptionHandler>()
             .AddProblemDetails();
 
         return builder;
