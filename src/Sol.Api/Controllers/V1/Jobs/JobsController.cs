@@ -47,6 +47,7 @@ public class JobsController(IJobsService jobsService) : ControllerBase
     [SwaggerRequestExample(typeof(CreateJobRequestModel), typeof(CreateJobRequestModelExample))]
     [ProducesResponseType<JobResponseModel>(202)]
     [ProducesResponseType<ProblemDetails>(422)]
+    [ProducesResponseType<ProblemDetails>(428)]
     [SwaggerResponseExample(202, typeof(JobResponseModelExample))]
     public async Task<IActionResult> CreateJob(
         [FromBody] CreateJobRequestModel request,
@@ -60,7 +61,7 @@ public class JobsController(IJobsService jobsService) : ControllerBase
         
     [HttpPut("{id}")]
     [RequiresHeader(Constants.IfMatchHeaderKey)] 
-    [ProducesResponseType<JobResponseModel>(202)]
+    [ProducesResponseType<JobResponseModel>(200)]
     [ProducesResponseType<ProblemDetails>(404)]
     [ProducesResponseType<ProblemDetails>(412)]
     [ProducesResponseType<ProblemDetails>(428)]
