@@ -1,6 +1,2 @@
-namespace Sol.Api.UnitTests;
-
-public class GlobalUsings
-{
-    
-}
+global using Xunit;
+global using Sol.Api.UnitTests.TestHelpers;

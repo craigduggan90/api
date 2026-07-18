@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sol.Data.Context.Configuration.Helpers;
-using Sol.Data.Context.Converters;
 using Sol.Domain.Entities;
 using Sol.Domain.Enums;
 using System.Diagnostics.CodeAnalysis;

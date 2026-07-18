@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Sol.Api.Infrastructure.Errors.Handlers;
-using Sol.Api.UnitTests.TestHelpers;
 using Sol.Core.Exceptions;
 
 namespace Sol.Api.UnitTests.Infrastructure.Errors.Handlers;

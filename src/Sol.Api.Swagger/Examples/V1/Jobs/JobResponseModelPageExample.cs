@@ -1,6 +1,5 @@
 using Sol.Api.Contracts.V1.ResponseModels;
 using Sol.Common.Pagination;
-using Sol.Domain.Enums;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Sol.Api.Swagger.Examples.V1.Jobs;

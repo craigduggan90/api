@@ -1,4 +1,3 @@
-using Sol.Common.Extensions;
 using Sol.Domain.Entities.Abstract;
 using Sol.Domain.Enums;
 

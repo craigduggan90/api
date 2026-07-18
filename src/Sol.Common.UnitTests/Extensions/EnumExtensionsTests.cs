@@ -1,7 +1,5 @@
-﻿using Sol.Common.Exceptions;
-using Sol.Common.Extensions;
+﻿using Sol.Common.Extensions;
 using System.ComponentModel;
-using System.Text.Json;
 
 namespace Sol.Common.UnitTests.Extensions;
 

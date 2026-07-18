@@ -1,9 +1,4 @@
-﻿using Sol.Common.Exceptions;
-using Sol.Common.Formatters;
-using System.ComponentModel;
-using System.Globalization;
-
-namespace Sol.Common.Extensions;
+﻿namespace Sol.Common.Extensions;
 
 /// <summary>Extension methods for base <see cref="Enum"/> types.</summary>
 public static class EnumExtensions

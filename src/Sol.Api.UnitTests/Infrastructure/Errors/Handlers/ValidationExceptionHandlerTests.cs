@@ -2,7 +2,6 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Sol.Api.Infrastructure.Errors.Handlers;
-using Sol.Api.UnitTests.TestHelpers;
 using Sol.Common.Extensions;
 using Sol.Core.Exceptions;
 
