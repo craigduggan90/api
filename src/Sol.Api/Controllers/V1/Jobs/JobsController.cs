@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Sol.Api.Attributes;
 using Sol.Api.Contracts.V1.RequestModels;
 using Sol.Api.Contracts.V1.ResponseModels;
+using Sol.Api.Controllers.V1.Abstract;
 using Sol.Api.Infrastructure;
 using Sol.Api.Swagger.Examples.V1.Common;
 using Sol.Api.Swagger.Examples.V1.Jobs;
@@ -12,9 +13,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace Sol.Api.Controllers.V1.Jobs;
 
-[ApiController]
-[Route("api/[controller]")]
-public class JobsController(IJobsService jobsService) : ControllerBase
+public class JobsController(IJobsService jobsService) : SolControllerBase
 {
     [HttpGet]
     [ProducesResponseType<PagedList<JobResponseModel>>(200)]
