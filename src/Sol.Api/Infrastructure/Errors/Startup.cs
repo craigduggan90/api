@@ -12,8 +12,8 @@ public static class Startup
             .AddExceptionHandler<MissingHeaderExceptionHandler>()
             .AddExceptionHandler<NotFoundExceptionHandler>()
             .AddExceptionHandler<ValidationExceptionHandler>()
-            .AddExceptionHandler<UnhandledExceptionHandler>()
             .AddExceptionHandler<ConcurrencyTokenMismatchExceptionHandler>()
+            .AddExceptionHandler<UnhandledExceptionHandler>()
             .AddProblemDetails();
 
         return builder;

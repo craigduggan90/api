@@ -38,7 +38,7 @@ public static class JobsMapper
         this UpdateJobRequestModel model,
         string id,
         string? concurrencyToken) => 
-        new(id, concurrencyToken ?? string.Empty, model.Status, model.ErrorCode, model.ErrorMessage);
+        new(id, (concurrencyToken ?? string.Empty).Trim('"'), model.Status, model.ErrorCode, model.ErrorMessage);
     
     public static GetJobsRequest ToGetJobsRequestRequest(this GetJobsRequestModel model) =>
         new(model.Type,

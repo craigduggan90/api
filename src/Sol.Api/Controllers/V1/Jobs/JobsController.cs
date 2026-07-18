@@ -38,6 +38,7 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
         CancellationToken cancellationToken)
     {
         var job = await jobsService.GetJobByIdAsync(id, cancellationToken);
+        SetEtagResponseHeader(job.ConcurrencyToken);
         return Ok(job.ToJobResponseDetailModel());
     }
 
@@ -57,6 +58,7 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
     {
         var model = request.ToCreateJobRequest(idempotency);
         var job = await jobsService.CreateJobAsync(model, cancellationToken);
+        SetEtagResponseHeader(job.ConcurrencyToken);
         return AcceptedAtAction(nameof(GetJobById), new { id = job.Id }, job.ToJobResponseModel());
     }
         
@@ -80,6 +82,7 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
     {
         var model = request.ToUpdateJobRequest(id, concurrencyToken);
         var job = await jobsService.UpdateJobAsync(model, cancellationToken);
+        SetEtagResponseHeader(job.ConcurrencyToken);
         return Ok(job.ToJobResponseModel());
     }
 }
