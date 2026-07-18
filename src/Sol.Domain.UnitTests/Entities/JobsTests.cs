@@ -1,3 +1,4 @@
+using Sol.Common.Extensions;
 using Sol.Common.Providers.Identifiers;
 using Sol.Common.Providers.Temporal;
 using Sol.Domain.Entities;
@@ -157,6 +158,51 @@ public static class JobTests
             job.Update(JobStatusEnum.Failed, "OTHER_CODE", "some other message");
 
             Assert.True(job.IsDirty);
+        }
+    }
+    
+    public class ConcurrencyTokenTests : JobTestsBase
+    {
+        [Fact]
+        public void IsSet_WhenJustConstructed()
+        {
+            var job = CreateJob();
+
+            Assert.False(string.IsNullOrEmpty(job.ConcurrencyToken));
+        }
+
+        [Fact]
+        public void Changes_WhenUpdateChangesAValue()
+        {
+            var job = CreateJob();
+            var initialToken = job.ConcurrencyToken;
+
+            job.Update(JobStatusEnum.InProgress, null, null);
+
+            Assert.NotEqual(initialToken, job.ConcurrencyToken);
+        }
+
+        [Fact]
+        public void DoesNotChange_WhenUpdateIsANoOp()
+        {
+            var job = CreateJob();
+            job.Update(JobStatusEnum.InProgress, null, null);
+            var tokenAfterFirstUpdate = job.ConcurrencyToken;
+
+            job.Update(JobStatusEnum.InProgress, null, null);
+
+            Assert.Equal(tokenAfterFirstUpdate, job.ConcurrencyToken);
+        }
+
+        [Fact]
+        public void Changes_WhenJobIsDeleted()
+        {
+            var job = CreateJob();
+            var tokenBeforeDelete = job.ConcurrencyToken;
+
+            job.Delete();
+
+            Assert.NotEqual(tokenBeforeDelete, job.ConcurrencyToken);
         }
     }
 

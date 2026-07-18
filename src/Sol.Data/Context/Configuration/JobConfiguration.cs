@@ -47,5 +47,10 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
         builder.Property(entity => entity.ErrorMessage)
             .HasColumnName("error_message")
             .HasMaxLength(255);
+
+        builder.Property(entity => entity.ConcurrencyToken)
+            .HasColumnName("concurrency_token")
+            .HasMaxLength(32)
+            .IsConcurrencyToken();
     }
 }

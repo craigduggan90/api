@@ -1,3 +1,4 @@
+using Sol.Common.Extensions;
 using Sol.Domain.Entities.Abstract;
 using Sol.Domain.Enums;
 
@@ -10,6 +11,7 @@ public class Job : EntityBase
         IdempotencyKey = idempotencyKey;
         Type = type;
         Parameters = parameters;
+        SetConcurrencyToken();
     }
 
     public string IdempotencyKey { get; }
@@ -23,6 +25,8 @@ public class Job : EntityBase
     public string? ErrorCode { get; private set; }
     
     public string? ErrorMessage { get; private set; }
+    
+    public string ConcurrencyToken { get; private set; }
     
     public override object AsSerializable()
         => new { Id, IdempotencyKey, Type, Status, ErrorCode, DateCreated, DateModified };
@@ -45,4 +49,13 @@ public class Job : EntityBase
         SetDateModified();
         SoftDelete();
     }
+
+    protected override void SetDateModified()
+    {
+        base.SetDateModified();
+        SetConcurrencyToken();
+    }
+
+    private void SetConcurrencyToken() => 
+        ConcurrencyToken = DateModified.ToString("O").GetMd5Digest();
 }
