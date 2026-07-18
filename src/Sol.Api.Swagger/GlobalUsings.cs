@@ -1,0 +1,1 @@
+global using SolConstants = Sol.Common.Constants;

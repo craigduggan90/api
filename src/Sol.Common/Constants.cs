@@ -1,6 +1,6 @@
-namespace Sol.Api.Infrastructure;
+namespace Sol.Common;
 
-internal static class Constants
+public static class Constants
 {
     public const string IdempotencyHeaderKey = "Idempotency-Key";
     public const string IfMatchHeaderKey = "If-Match";

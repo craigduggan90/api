@@ -3,9 +3,9 @@ using Sol.Api.Attributes;
 using Sol.Api.Contracts.V1.RequestModels;
 using Sol.Api.Contracts.V1.ResponseModels;
 using Sol.Api.Controllers.V1.Abstract;
-using Sol.Api.Infrastructure;
 using Sol.Api.Swagger.Examples.V1.Common;
 using Sol.Api.Swagger.Examples.V1.Jobs;
+using Sol.Common;
 using Sol.Common.Extensions;
 using Sol.Common.Pagination;
 using Sol.Core.Services.Jobs;
@@ -32,7 +32,7 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
     [ProducesResponseType<JobResponseDetailModel>(200)]
     [ProducesResponseType<ProblemDetails>(404)]
     [SwaggerResponseExample(200, typeof(JobResponseDetailModelExample))]
-    [SwaggerResponseExample(404, typeof(JobNotFoundProblemDetailsExample))]
+    [SwaggerResponseExample(404, typeof(JobNotFoundProblemDetailsFactory))]
     public async Task<IActionResult> GetJobById(
         string id,
         CancellationToken cancellationToken)
@@ -48,6 +48,8 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
     [ProducesResponseType<ProblemDetails>(422)]
     [ProducesResponseType<ProblemDetails>(428)]
     [SwaggerResponseExample(202, typeof(JobResponseModelExample))]
+    [SwaggerResponseExample(422, typeof(JobResponseModelExample))]
+    [SwaggerResponseExample(428, typeof(MissingIdempotencyKeyExample))]
     public async Task<IActionResult> CreateJob(
         [FromBody] CreateJobRequestModel request,
         [FromHeader(Name = Constants.IdempotencyHeaderKey)] string? idempotency,
@@ -66,8 +68,10 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
     [ProducesResponseType<ProblemDetails>(428)]
     [ProducesResponseType<ProblemDetails>(422)]
     [SwaggerResponseExample(200, typeof(JobResponseModelExample))]
-    [SwaggerResponseExample(404, typeof(JobNotFoundProblemDetailsExample))]
+    [SwaggerResponseExample(404, typeof(JobNotFoundProblemDetailsFactory))]
+    [SwaggerResponseExample(421, typeof(ConcurrencyTokenMismatchExample))]
     [SwaggerResponseExample(422, typeof(CommandValidationProblemDetailsExample))]
+    [SwaggerResponseExample(428, typeof(MissingConcurrencyTokenExample))]
     public async Task<IActionResult> UpdateJob(
         [FromRoute] string id,
         [FromHeader(Name = Constants.IfMatchHeaderKey)] string? concurrencyToken,
