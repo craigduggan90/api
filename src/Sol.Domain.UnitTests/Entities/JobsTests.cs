@@ -1,9 +1,8 @@
-using Sol.Common.Extensions;
 using Sol.Common.Providers.Identifiers;
 using Sol.Common.Providers.Temporal;
 using Sol.Domain.Entities;
 using Sol.Domain.Enums;
-using System.Text.Json;
+using Xunit;
 
 namespace Sol.Domain.UnitTests.Entities;
 
@@ -81,6 +80,14 @@ public static class JobTests
             Assert.Equal(fixedTime.UtcDateTime, job.DateCreated);
             Assert.Equal(fixedTime.UtcDateTime, job.DateModified);
         }
+
+        [Fact]
+        public void SetsConcurrencyToken_WhenConstructed()
+        {
+            var job = CreateJob();
+
+            Assert.False(string.IsNullOrEmpty(job.ConcurrencyToken));
+        }
     }
 
     public class Update : JobTestsBase
@@ -128,6 +135,28 @@ public static class JobTests
         }
 
         [Fact]
+        public void ChangesConcurrencyToken_WhenValueChanges()
+        {
+            var job = CreateJob();
+            var initialToken = job.ConcurrencyToken;
+
+            job.Update(JobStatusEnum.InProgress, null, null);
+
+            Assert.NotEqual(initialToken, job.ConcurrencyToken);
+        }
+
+        [Fact]
+        public void DoesNotChangeConcurrencyToken_WhenValuesAreUnchanged()
+        {
+            var job = CreateJob();
+            var initialToken = job.ConcurrencyToken;
+
+            job.Update(JobStatusEnum.Pending, null, null);
+
+            Assert.Equal(initialToken, job.ConcurrencyToken);
+        }
+
+        [Fact]
         public void AllowsStatusToBeAppliedRepeatedly_WhenCalledMultipleTimes()
         {
             var job = CreateJob();
@@ -137,11 +166,12 @@ public static class JobTests
 
             Assert.Equal(JobStatusEnum.Complete, job.Status);
         }
-        
+
         [Fact]
         public void DoesNotChangeStatus_WhenSameStatusIsProvidedAgain()
         {
-            var job = CreateJob(j => j.Update(JobStatusEnum.Failed, "SOME_CODE", "some message"));
+            var job = CreateJob();
+            job.Update(JobStatusEnum.Failed, "SOME_CODE", "some message");
 
             job.Update(JobStatusEnum.Failed, "OTHER_CODE", "some other message");
 
@@ -153,56 +183,12 @@ public static class JobTests
         [Fact]
         public void MarksJobAsDirty_WhenOnlyErrorFieldsChange_EvenIfStatusIsUnchanged()
         {
-            var job = CreateJob(j => j.Update(JobStatusEnum.Failed, "SOME_CODE", "some message"));
+            var job = CreateJob();
+            job.Update(JobStatusEnum.Failed, "SOME_CODE", "some message");
 
             job.Update(JobStatusEnum.Failed, "OTHER_CODE", "some other message");
 
             Assert.True(job.IsDirty);
-        }
-    }
-    
-    public class ConcurrencyTokenTests : JobTestsBase
-    {
-        [Fact]
-        public void IsSet_WhenJustConstructed()
-        {
-            var job = CreateJob();
-
-            Assert.False(string.IsNullOrEmpty(job.ConcurrencyToken));
-        }
-
-        [Fact]
-        public void Changes_WhenUpdateChangesAValue()
-        {
-            var job = CreateJob();
-            var initialToken = job.ConcurrencyToken;
-
-            job.Update(JobStatusEnum.InProgress, null, null);
-
-            Assert.NotEqual(initialToken, job.ConcurrencyToken);
-        }
-
-        [Fact]
-        public void DoesNotChange_WhenUpdateIsANoOp()
-        {
-            var job = CreateJob();
-            job.Update(JobStatusEnum.InProgress, null, null);
-            var tokenAfterFirstUpdate = job.ConcurrencyToken;
-
-            job.Update(JobStatusEnum.InProgress, null, null);
-
-            Assert.Equal(tokenAfterFirstUpdate, job.ConcurrencyToken);
-        }
-
-        [Fact]
-        public void Changes_WhenJobIsDeleted()
-        {
-            var job = CreateJob();
-            var tokenBeforeDelete = job.ConcurrencyToken;
-
-            job.Delete();
-
-            Assert.NotEqual(tokenBeforeDelete, job.ConcurrencyToken);
         }
     }
 
@@ -231,6 +217,17 @@ public static class JobTests
         }
 
         [Fact]
+        public void ChangesConcurrencyToken_WhenCalled()
+        {
+            var job = CreateJob();
+            var initialToken = job.ConcurrencyToken;
+
+            job.Delete();
+
+            Assert.NotEqual(initialToken, job.ConcurrencyToken);
+        }
+
+        [Fact]
         public void DoesNotChangeDateDeleted_WhenCalledTwice()
         {
             using var firstDeleteTime = new DateTimeOffsetProviderContext(new DateTimeOffset(2026, 1, 1, 12, 0, 0, TimeSpan.Zero));
@@ -242,91 +239,81 @@ public static class JobTests
 
             Assert.Equal(firstDeletedAt, job.DateDeleted);
         }
+
+        [Fact]
+        public void DoesNotChangeConcurrencyToken_WhenCalledTwice()
+        {
+            var job = CreateJob(j => j.Delete());
+            var tokenAfterFirstDelete = job.ConcurrencyToken;
+
+            job.Delete();
+
+            Assert.Equal(tokenAfterFirstDelete, job.ConcurrencyToken);
+        }
     }
 
-    public class ToStringTests : JobTestsBase
+    public class AsSerializableTests : JobTestsBase
     {
-        [Fact]
-        public void ReturnsValidJson_WhenCalled()
-        {
-            var job = CreateJob();
-
-            var json = job.ToString();
-
-            var exception = Record.Exception(() => JsonDocument.Parse(json));
-            Assert.Null(exception);
-        }
-
         [Fact]
         public void DoesNotIncludeParametersOrErrorMessage_WhenCalled()
         {
             var job = CreateJob();
 
-            var json = job.ToString();
-            var root = JsonDocument.Parse(json).RootElement;
+            var serializable = job.AsSerializable();
+            var type = serializable.GetType();
 
-            Assert.False(root.TryGetProperty("parameters", out _));
-            Assert.False(root.TryGetProperty("errorMessage", out _));
+            Assert.Null(type.GetProperty("Parameters"));
+            Assert.Null(type.GetProperty("ErrorMessage"));
         }
 
         [Fact]
-        public void IncludesIdIdempotencyKeyAndTimestamps_WhenCalled()
+        public void ReflectsIdIdempotencyKeyTypeAndStatus_WhenCalled()
         {
             var job = CreateJob();
 
-            var json = job.ToString();
-            var root = JsonDocument.Parse(json).RootElement;
+            var serializable = job.AsSerializable();
+            var type = serializable.GetType();
 
-            Assert.Equal(job.Id, root.GetProperty("id").GetString());
-            Assert.Equal(job.IdempotencyKey, root.GetProperty("idempotencyKey").GetString());
-            Assert.True(root.TryGetProperty("dateCreated", out _));
-            Assert.True(root.TryGetProperty("dateModified", out _));
+            Assert.Equal(job.Id, type.GetProperty("Id")!.GetValue(serializable));
+            Assert.Equal(job.IdempotencyKey, type.GetProperty("IdempotencyKey")!.GetValue(serializable));
+            Assert.Equal(job.Type, type.GetProperty("Type")!.GetValue(serializable));
+            Assert.Equal(job.Status, type.GetProperty("Status")!.GetValue(serializable));
         }
 
         [Fact]
-        public void IncludesErrorCodeAsNull_WhenJobHasNotFailed()
-        {
-            var job = CreateJob();
-
-            var json = job.ToString();
-            var root = JsonDocument.Parse(json).RootElement;
-
-            Assert.Equal(JsonValueKind.Null, root.GetProperty("errorCode").ValueKind);
-        }
-
-        [Fact]
-        public void IncludesErrorCode_WhenJobHasFailed()
+        public void ReflectsErrorCode_WhenJobHasFailed()
         {
             var job = CreateJob(j => j.Update(JobStatusEnum.Failed, "SOME_CODE", "some message"));
 
-            var json = job.ToString();
-            var root = JsonDocument.Parse(json).RootElement;
+            var serializable = job.AsSerializable();
+            var errorCode = serializable.GetType().GetProperty("ErrorCode")!.GetValue(serializable);
 
-            Assert.Equal("SOME_CODE", root.GetProperty("errorCode").GetString());
+            Assert.Equal("SOME_CODE", errorCode);
         }
 
         [Fact]
-        public void SerializesTypeAsString_NotNumber()
+        public void ReflectsErrorCodeAsNull_WhenJobHasNotFailed()
         {
             var job = CreateJob();
 
-            var json = job.ToString();
-            var root = JsonDocument.Parse(json).RootElement;
+            var serializable = job.AsSerializable();
+            var errorCode = serializable.GetType().GetProperty("ErrorCode")!.GetValue(serializable);
 
-            Assert.Equal(JsonValueKind.String, root.GetProperty("type").ValueKind);
-            Assert.Equal("archiveProjectJob", root.GetProperty("type").GetString());
+            Assert.Null(errorCode);
         }
 
         [Fact]
-        public void SerializesStatusAsString_NotNumber()
+        public void ReflectsDateCreatedAndDateModified_WhenTimeProviderIsFixed()
         {
+            var fixedTime = new DateTimeOffset(2026, 1, 1, 12, 0, 0, TimeSpan.Zero);
+            using var _ = new DateTimeOffsetProviderContext(fixedTime);
             var job = CreateJob();
 
-            var json = job.ToString();
-            var root = JsonDocument.Parse(json).RootElement;
+            var serializable = job.AsSerializable();
+            var type = serializable.GetType();
 
-            Assert.Equal(JsonValueKind.String, root.GetProperty("status").ValueKind);
-            Assert.Equal("pending", root.GetProperty("status").GetString());
+            Assert.Equal(job.DateCreated, type.GetProperty("DateCreated")!.GetValue(serializable));
+            Assert.Equal(job.DateModified, type.GetProperty("DateModified")!.GetValue(serializable));
         }
     }
 }

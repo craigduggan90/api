@@ -11,7 +11,7 @@ public class Job : EntityBase
         IdempotencyKey = idempotencyKey;
         Type = type;
         Parameters = parameters;
-        SetConcurrencyToken();
+        ConcurrencyToken = GetConcurrencyToken();
     }
 
     public string IdempotencyKey { get; }
@@ -53,9 +53,8 @@ public class Job : EntityBase
     protected override void SetDateModified()
     {
         base.SetDateModified();
-        SetConcurrencyToken();
+        ConcurrencyToken = GetConcurrencyToken();
     }
 
-    private void SetConcurrencyToken() => 
-        ConcurrencyToken = DateModified.ToString("O").GetMd5Digest();
+    private string GetConcurrencyToken() => DateModified.ToString("O").GetMd5Digest();
 }
