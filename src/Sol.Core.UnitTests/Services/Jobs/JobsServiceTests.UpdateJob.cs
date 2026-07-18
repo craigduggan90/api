@@ -69,7 +69,7 @@ public static partial class JobsServiceTests
 
             Assert.Null(exception);
         }
-        
+
         [Fact]
         public async Task DoesNotSave_WhenJobHasNotChanged()
         {

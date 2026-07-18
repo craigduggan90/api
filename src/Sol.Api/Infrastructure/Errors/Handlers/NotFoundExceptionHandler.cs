@@ -9,7 +9,7 @@ public class NotFoundExceptionHandler : IExceptionHandler
     private const string Title = "Resource Not Found";
     private const string Type = "https://www.sol.api/errors/not-found";
     internal const int StatusCode = 404;
-    
+
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         if (exception is not NotFoundException notFoundException)
@@ -29,7 +29,7 @@ public class NotFoundExceptionHandler : IExceptionHandler
             Type = Type,
             Status = StatusCode
         };
-        
+
         if (exception.ResourceType is not null)
             problemDetails.Extensions.Add("resource", exception.ResourceType);
 

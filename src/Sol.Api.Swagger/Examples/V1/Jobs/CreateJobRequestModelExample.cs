@@ -12,6 +12,7 @@ public class CreateJobRequestModelExample : IExamplesProvider<CreateJobRequestMo
             nameof(JobTypeEnum.ArchiveProjectJob),
             JsonSerializer.SerializeToElement(new
             {
-                Property = "value", Nested = new { OtherProperty = "otherValue" }
+                Property = "value",
+                Nested = new { OtherProperty = "otherValue" }
             }));
 }

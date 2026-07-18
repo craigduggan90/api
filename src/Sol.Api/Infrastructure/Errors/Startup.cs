@@ -18,7 +18,7 @@ public static class Startup
 
         return builder;
     }
-    
+
     public static IApplicationBuilder UseErrorHandling(this IApplicationBuilder app)
         => app.UseExceptionHandler();
 }

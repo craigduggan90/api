@@ -9,7 +9,7 @@ public class MissingHeaderExceptionHandler : IExceptionHandler
     private const string Title = "Precondition Required";
     private const string Type = "https://www.sol.api/errors/missing-header";
     internal const int StatusCode = 428;
-    
+
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         if (exception is not MissingHeaderException typedException)

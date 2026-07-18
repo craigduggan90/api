@@ -13,7 +13,7 @@ public static class QueryValidationExceptionTests
         public void SetsErrors_WhenConstructed()
         {
             ValidationFailure[] errors = [new("PropertyName", "Error message")];
-            
+
             var exception = new QueryValidationException(errors);
 
             Assert.Same(errors, exception.Errors);

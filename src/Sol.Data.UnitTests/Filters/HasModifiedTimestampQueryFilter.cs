@@ -7,7 +7,7 @@ public static class HasModifiedTimestampQueryFilter
 {
     private static readonly DateTime BaseDate = new(2020, 1, 1, 12, 0, 0);
     private static readonly DateTime MaxSeedDate = BaseDate.AddDays(99);
-    
+
     private sealed class HasModified(DateTime date) : IHasModifiedTimestamp
     {
         public DateTime DateModified { get; } = date;

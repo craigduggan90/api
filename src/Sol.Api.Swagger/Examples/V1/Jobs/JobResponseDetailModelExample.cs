@@ -8,8 +8,8 @@ public class JobResponseDetailModelExample : IExamplesProvider<JobResponseDetail
 {
     public JobResponseDetailModel GetExamples()
         => new(
-            "3aff52756b1944489b1a3f85bf8d3d91", 
-            "76b06dd6-416c-4a86-a97c-7316158f1a95",  
+            "3aff52756b1944489b1a3f85bf8d3d91",
+            "76b06dd6-416c-4a86-a97c-7316158f1a95",
             "ea6e3216715d930fe856dab86ac5afbe",
             nameof(JobTypeEnum.ArchiveUserGroupJob),
             nameof(JobStatusEnum.Failed),

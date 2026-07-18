@@ -11,6 +11,8 @@ public class RequiresHeaderAttribute(string headerName) : ActionFilterAttribute
         if (!context.HttpContext.Request.Headers.TryGetValue(headerName, out var values)
             || values.Count == 0
             || string.IsNullOrWhiteSpace(values[0]))
+        {
             throw new MissingHeaderException(headerName);
+        }
     }
 }

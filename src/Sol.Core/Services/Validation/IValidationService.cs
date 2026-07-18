@@ -12,4 +12,3 @@ public interface IValidationService
     /// </summary>
     Task ValidateCommandAsync<T>(T command, CancellationToken cancellationToken);
 }
-

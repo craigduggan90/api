@@ -13,7 +13,7 @@ public static class CommandValidationExceptionTests
         public void SetsErrors_WhenConstructed()
         {
             ValidationFailure[] errors = [new("PropertyName", "Error message")];
-            
+
             var exception = new CommandValidationException(errors);
 
             Assert.Same(errors, exception.Errors);

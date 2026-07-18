@@ -8,7 +8,7 @@ internal static class EntityPagedListExtensions
     public static PagedList<TModel> ToPagedList<TEntity, TModel>(this IReadOnlyList<TEntity> list,
         Func<TEntity, TModel> converter) where TEntity : IHasCursor =>
         new(list.Select(converter).ToList(), GetCursor(list), list.Count);
-    
+
     private static string? GetCursor<T>(IReadOnlyList<T> entities)
         where T : IHasCursor
     {

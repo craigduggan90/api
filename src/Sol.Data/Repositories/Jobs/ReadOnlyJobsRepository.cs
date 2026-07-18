@@ -22,11 +22,11 @@ public class ReadOnlyJobsRepository(ApiDbContext context) : RepositoryBase(conte
 
     /// <inheritdoc />
     public async Task<IEnumerable<Job>> GetAsync(
-        JobTypeEnum? type = null, 
-        JobStatusEnum? status = null, 
+        JobTypeEnum? type = null,
+        JobStatusEnum? status = null,
         string? errorCode = null,
         DateFilter? dateFilter = null,
-        PaginationFilter? pagination = null, 
+        PaginationFilter? pagination = null,
         CancellationToken cancellationToken = default)
         => await Context.Jobs
             .ApplyTypeFilter(type)

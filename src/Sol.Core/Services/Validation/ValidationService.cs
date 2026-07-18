@@ -18,7 +18,7 @@ public class ValidationService : IValidationService
             .ToDictionary(x => x.RequestType, x => x.Validator);
     }
 
-    public async Task ValidateQueryAsync<T>(T query, CancellationToken cancellationToken) => 
+    public async Task ValidateQueryAsync<T>(T query, CancellationToken cancellationToken) =>
         QueryValidationException.ThrowIfValidationFailed(await ValidateAsync(query, cancellationToken));
 
     public async Task ValidateCommandAsync<T>(T command, CancellationToken cancellationToken) =>
@@ -26,7 +26,7 @@ public class ValidationService : IValidationService
 
     private Task<ValidationResult> ValidateAsync<T>(T request, CancellationToken cancellationToken)
     {
-        return _validatorsByType.TryGetValue(typeof(T), out var validator) 
+        return _validatorsByType.TryGetValue(typeof(T), out var validator)
             ? validator.ValidateAsync(new ValidationContext<T>(request), cancellationToken)
             : throw new ValidatorResolverException($"No validator found for '{typeof(T).Name}'.");
     }

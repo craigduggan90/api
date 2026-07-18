@@ -23,7 +23,7 @@ public static class JobsFilterHelper
         => value is null
             ? queryable
             : queryable.Where(job => job.Status == value);
-    
+
     /// <summary>Filters a collection of <see cref="Job"/> objects by error code.</summary>
     /// <param name="queryable">The collection to filter.</param>
     /// <param name="value">The value to filter by.</param>

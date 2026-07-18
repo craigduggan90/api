@@ -2,7 +2,6 @@ using Sol.Common.Providers.Identifiers;
 using Sol.Common.Providers.Temporal;
 using Sol.Domain.Entities;
 using Sol.Domain.Enums;
-using Xunit;
 
 namespace Sol.Domain.UnitTests.Entities;
 

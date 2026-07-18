@@ -9,7 +9,7 @@ public class ConcurrencyTokenMismatchExceptionHandler : IExceptionHandler
     private const string Title = "Precondition Failed";
     private const string Type = "https://www.sol.api/errors/concurrency";
     internal const int StatusCode = 412;
-    
+
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         if (exception is not ConcurrencyTokenMismatchException typedException)

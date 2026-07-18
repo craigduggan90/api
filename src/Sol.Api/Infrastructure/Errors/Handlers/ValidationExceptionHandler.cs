@@ -11,7 +11,7 @@ public class ValidationExceptionHandler : IExceptionHandler
     private const string Type = "https://www.sol.api/errors/validation";
     internal const int CommandValidationStatusCode = 422;
     internal const int QueryValidationStatusCode = 400;
-    
+
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         if (exception is not ValidationExceptionBase baseException)

@@ -37,21 +37,21 @@ public static partial class JobsServiceTests
             var sut = CreateSut();
             var request = new GetJobsRequest(Type: "ArchiveProjectJob", Status: "Failed");
             Repository.GetAsync(
-                    Arg.Any<JobTypeEnum?>(), 
-                    Arg.Any<JobStatusEnum?>(), 
+                    Arg.Any<JobTypeEnum?>(),
+                    Arg.Any<JobStatusEnum?>(),
                     Arg.Any<string?>(),
                      Arg.Any<Data.Models.DateFilter>(),
-                    Arg.Any<Data.Models.PaginationFilter>(), 
+                    Arg.Any<Data.Models.PaginationFilter>(),
                     Arg.Any<CancellationToken>())
                 .Returns([]);
 
             await sut.GetJobsAsync(request, TestContext.Current.CancellationToken);
 
             await Repository.Received(1).GetAsync(
-                JobTypeEnum.ArchiveProjectJob, 
-                JobStatusEnum.Failed, 
+                JobTypeEnum.ArchiveProjectJob,
+                JobStatusEnum.Failed,
                 null,
-                Arg.Any<Data.Models.DateFilter>(), 
+                Arg.Any<Data.Models.DateFilter>(),
                 Arg.Any<Data.Models.PaginationFilter>(),
                 Arg.Any<CancellationToken>());
         }
@@ -63,11 +63,11 @@ public static partial class JobsServiceTests
             var request = new GetJobsRequest();
             var job = CreateJob();
             Repository.GetAsync(
-                    Arg.Any<JobTypeEnum?>(), 
-                    Arg.Any<JobStatusEnum?>(), 
-                    Arg.Any<string?>(), 
+                    Arg.Any<JobTypeEnum?>(),
+                    Arg.Any<JobStatusEnum?>(),
+                    Arg.Any<string?>(),
                     Arg.Any<Data.Models.DateFilter>(),
-                    Arg.Any<Data.Models.PaginationFilter>(), 
+                    Arg.Any<Data.Models.PaginationFilter>(),
                     Arg.Any<CancellationToken>())
                 .Returns([job]);
 

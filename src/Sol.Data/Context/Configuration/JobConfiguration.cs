@@ -27,19 +27,19 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
         builder.Property(entity => entity.Status)
             .HasColumnName("status")
             .HasConversion(
-                entity => (int)entity, 
+                entity => (int)entity,
                 stored => (JobStatusEnum)stored);
-        
+
         builder.Property(entity => entity.Type)
             .HasColumnName("type")
             .HasConversion(
-                entity => (int)entity, 
+                entity => (int)entity,
                 stored => (JobTypeEnum)stored);
-        
+
         builder.Property(entity => entity.Parameters)
             .HasColumnName("parameters")
             .HasMaxLength(1000);
-        
+
         builder.Property(entity => entity.ErrorCode)
             .HasColumnName("error_code")
             .HasMaxLength(50);

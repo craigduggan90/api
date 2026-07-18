@@ -21,12 +21,12 @@ public static class Startup
             });
             options.ExampleFilters();
         });
-    
+
         builder.Services.AddSwaggerExamplesFromAssemblyOf<JobResponseDetailModelExample>();
 
         return builder;
     }
-    
+
     public static WebApplication UseSwaggerDocumentation(this WebApplication app)
     {
         app.UseSwagger();

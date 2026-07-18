@@ -28,8 +28,8 @@ public static class JobsControllerTests
         protected readonly IJobsService JobsService = Substitute.For<IJobsService>();
 
         private JobsController? _sut;
-        
-        protected JobsController GetOrCreateSut() => 
+
+        protected JobsController GetOrCreateSut() =>
             _sut ??= new JobsController(JobsService)
             {
                 ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
@@ -70,10 +70,10 @@ public static class JobsControllerTests
         protected void AssertEtagSet(string expected)
         {
             GetOrCreateSut().Response.Headers.TryGetValue(Constants.ETagHeaderKey, out var actual);
-            Assert.Equal(expected,  Assert.Single(actual)?.Trim('"'));
+            Assert.Equal(expected, Assert.Single(actual)?.Trim('"'));
         }
     }
-    
+
     public class GetJobs : JobControllerTestsBase
     {
         [Fact]
@@ -91,11 +91,11 @@ public static class JobsControllerTests
             var rawResult = await sut.GetJobs(request, TestContext.Current.CancellationToken);
 
             AssertResultValue<OkObjectResult, PagedList<JobResponseModel>>(rawResult, expected);
-            
+
             await JobsService.Received(1).GetJobsAsync(Arg.Any<GetJobsRequest>(), Arg.Any<CancellationToken>());
         }
     }
-    
+
     public class GetJobById : JobControllerTestsBase
     {
         [Fact]
@@ -103,7 +103,7 @@ public static class JobsControllerTests
         {
             const string id = "test-id";
             var jobModel = GetJobModel(id: id);
-            
+
             JobsService.GetJobByIdAsync(Arg.Is<string>(s => s == id), Arg.Any<CancellationToken>())
                 .Returns(jobModel);
 
@@ -118,7 +118,7 @@ public static class JobsControllerTests
             await JobsService.Received(1).GetJobByIdAsync(Arg.Is<string>(s => s == id), Arg.Any<CancellationToken>());
         }
     }
-    
+
     public class CreateJob : JobControllerTestsBase
     {
         [Fact]
@@ -127,7 +127,7 @@ public static class JobsControllerTests
             const string idempotencyKey = "test-idempotency-key";
 
             var requestModel = new CreateJobRequestModel(nameof(JobTypeEnum.ArchiveUserGroupJob), null);
-            
+
             var jobModel = GetJobModel(idempotencyKey: idempotencyKey);
 
             JobsService.CreateJobAsync(Arg.Any<CreateJobRequest>(), Arg.Any<CancellationToken>())
@@ -137,14 +137,14 @@ public static class JobsControllerTests
 
             var sut = GetOrCreateSut();
             var rawResult = await sut.CreateJob(requestModel, idempotencyKey, TestContext.Current.CancellationToken);
-            
+
             AssertResultValue<AcceptedAtActionResult, JobResponseModel>(rawResult, expected);
             AssertEtagSet(jobModel.ConcurrencyToken);
 
             await JobsService.Received(1).CreateJobAsync(Arg.Is<CreateJobRequest>(r => r.IdempotencyKey == idempotencyKey), Arg.Any<CancellationToken>());
         }
     }
-    
+
     public class UpdateJob : JobControllerTestsBase
     {
         [Fact]
@@ -152,8 +152,8 @@ public static class JobsControllerTests
         {
             const string id = "test-id";
             const string concurrencyToken = "test-concurrency-token";
-            var requestModel = new UpdateJobRequestModel(nameof(JobStatusEnum.Failed), "1010", "BAD THING HAPPEN" );
-            
+            var requestModel = new UpdateJobRequestModel(nameof(JobStatusEnum.Failed), "1010", "BAD THING HAPPEN");
+
             var jobModel = GetJobModel(id: id, concurrencyToken: concurrencyToken, status: requestModel.Status, errorCode: requestModel.ErrorCode, errorMessage: requestModel.ErrorMessage);
 
             JobsService.UpdateJobAsync(Arg.Any<UpdateJobRequest>(), Arg.Any<CancellationToken>())

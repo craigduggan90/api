@@ -11,7 +11,7 @@ public interface IReadOnlyJobsRepository : IReadOnlyRepository<Job>
     /// <param name="idempotencyKey">The idempotency key associated with the job.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     Task<Job?> GetByIdempotencyKeyAsync(string idempotencyKey, CancellationToken cancellationToken);
-    
+
     /// <summary>Get a collection of jobs with optional filters applied.</summary>
     /// <param name="type">Limit results to records matching this type.</param>
     /// <param name="status">Limit results to records with this status.</param>

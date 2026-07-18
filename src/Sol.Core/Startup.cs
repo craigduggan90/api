@@ -21,13 +21,13 @@ public static class Startup
         builder.Services.AddValidatorsFromAssemblyContaining<IValidationService>(
             includeInternalTypes: false,
             lifetime: ServiceLifetime.Singleton);
-        
+
         builder.AddValidatorsAsIValidator(typeof(IValidationService).Assembly);
         builder.Services.AddSingleton<IValidationService, ValidationService>();
-        
+
         return builder;
     }
-    
+
     /// <summary>
     /// Registers every concrete <see cref="AbstractValidator{T}"/> in the given assembly against
     /// both its closed IValidator&lt;T&gt; and the non-generic IValidator — the latter being what
@@ -46,7 +46,9 @@ public static class Startup
 
             foreach (var closedInterface in type.GetInterfaces()
                          .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IValidator<>)))
+            {
                 builder.Services.TryAddEnumerable(new ServiceDescriptor(closedInterface, type, lifetime));
+            }
         }
 
         return builder;

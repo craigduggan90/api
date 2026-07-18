@@ -1,6 +1,6 @@
-using Sol.Domain.Interfaces;
-using Sol.Core.Extensions;
 using Sol.Common.Pagination;
+using Sol.Core.Extensions;
+using Sol.Domain.Interfaces;
 using System.Globalization;
 
 namespace Sol.Core.UnitTests.Extensions;

@@ -15,25 +15,25 @@ public class Job : EntityBase
     }
 
     public string IdempotencyKey { get; }
-    
+
     public JobTypeEnum Type { get; }
 
     public JobStatusEnum Status { get; private set; } = JobStatusEnum.Pending;
-    
+
     public string? Parameters { get; }
-    
+
     public string? ErrorCode { get; private set; }
-    
+
     public string? ErrorMessage { get; private set; }
-    
+
     public string ConcurrencyToken { get; private set; }
-    
+
     public override object AsSerializable()
         => new { Id, IdempotencyKey, Type, Status, ErrorCode, DateCreated, DateModified };
 
     public void Update(
-        JobStatusEnum status, 
-        string? errorCode, 
+        JobStatusEnum status,
+        string? errorCode,
         string? errorMessage)
     {
         UpdateProperty(nameof(Status), status);
@@ -45,7 +45,7 @@ public class Job : EntityBase
     {
         if (DateDeleted.HasValue)
             return;
-        
+
         SetDateModified();
         SoftDelete();
     }

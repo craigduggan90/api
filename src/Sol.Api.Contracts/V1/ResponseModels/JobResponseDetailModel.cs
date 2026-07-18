@@ -5,7 +5,7 @@ public record JobResponseDetailModel(
     string IdempotencyKey,
     string ConcurrencyToken,
     string Type,
-    string Status, 
+    string Status,
     object? Parameters,
     DateTime DateCreated,
     DateTime DateLastModified,

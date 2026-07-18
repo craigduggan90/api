@@ -27,7 +27,7 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
         var result = await jobsService.GetJobsAsync(query.ToGetJobsRequestRequest(), cancellationToken);
         return Ok(result.Map(JobsMapper.ToJobResponseModel));
     }
-    
+
     [HttpGet("{id}")]
     [ProducesResponseType<JobResponseDetailModel>(200)]
     [ProducesResponseType<ProblemDetails>(404)]
@@ -61,9 +61,9 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
         SetEtagResponseHeader(job.ConcurrencyToken);
         return AcceptedAtAction(nameof(GetJobById), new { id = job.Id }, job.ToJobResponseModel());
     }
-        
+
     [HttpPut("{id}")]
-    [RequiresHeader(Constants.IfMatchHeaderKey)] 
+    [RequiresHeader(Constants.IfMatchHeaderKey)]
     [ProducesResponseType<JobResponseModel>(200)]
     [ProducesResponseType<ProblemDetails>(404)]
     [ProducesResponseType<ProblemDetails>(412)]
