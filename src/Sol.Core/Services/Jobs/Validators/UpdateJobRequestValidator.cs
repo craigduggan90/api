@@ -11,9 +11,6 @@ public class UpdateJobRequestValidator : AbstractValidator<UpdateJobRequest>
         RuleFor(request => request.Id)
             .NotEmpty();
         
-        RuleFor(request => request.EventTime)
-            .NotEqual(default(DateTime));
-        
         RuleFor(request => request.Status)
             .Must(value => Enum.TryParse<JobStatusEnum>(value, true, out _))
             .WithMessage("Must contain a valid job status.");

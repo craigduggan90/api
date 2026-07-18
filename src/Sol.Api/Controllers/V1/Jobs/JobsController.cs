@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Sol.Api.Contracts.V1.RequestModels;
 using Sol.Api.Contracts.V1.ResponseModels;
+using Sol.Api.Swagger.Examples.V1.Common;
 using Sol.Api.Swagger.Examples.V1.Jobs;
 using Sol.Common.Extensions;
+using Sol.Common.Pagination;
 using Sol.Core.Services.Jobs;
 using Swashbuckle.AspNetCore.Filters;
-using System.Net;
 
 namespace Sol.Api.Controllers.V1.Jobs;
 
@@ -14,6 +15,10 @@ namespace Sol.Api.Controllers.V1.Jobs;
 public class JobsController(IJobsService jobsService) : ControllerBase
 {
     [HttpGet]
+    [ProducesResponseType<PagedList<JobResponseModel>>(200)]
+    [ProducesResponseType<ProblemDetails>(400)]
+    [SwaggerResponseExample(200, typeof(JobResponseModelPageExample))]
+    [SwaggerResponseExample(400, typeof(QueryValidationProblemDetailsExample))]
     public async Task<IActionResult> GetJobs(
         [FromQuery] GetJobsRequestModel query,
         CancellationToken cancellationToken)
@@ -23,15 +28,16 @@ public class JobsController(IJobsService jobsService) : ControllerBase
     }
     
     [HttpGet("{id}")]
-    [ProducesResponseType<JobResponseModel>(200)]
+    [ProducesResponseType<JobResponseDetailModel>(200)]
     [ProducesResponseType<ProblemDetails>(404)]
-    [SwaggerResponseExample(200, typeof(JobResponseModelExample))]
+    [SwaggerResponseExample(200, typeof(JobResponseDetailModelExample))]
+    [SwaggerResponseExample(404, typeof(JobNotFoundProblemDetailsExample))]
     public async Task<IActionResult> GetJobById(
         string id,
         CancellationToken cancellationToken)
     {
         var job = await jobsService.GetJobByIdAsync(id, cancellationToken);
-        return Ok(job.ToJobResponseModel());
+        return Ok(job.ToJobResponseDetailModel());
     }
 
     [HttpPost]
@@ -50,11 +56,19 @@ public class JobsController(IJobsService jobsService) : ControllerBase
     }
         
     [HttpPut("{id}")]
+    [ProducesResponseType<JobResponseModel>(202)]
+    [ProducesResponseType<ProblemDetails>(404)]
+    [ProducesResponseType<ProblemDetails>(422)]
+    [SwaggerResponseExample(200, typeof(JobResponseModelExample))]
+    [SwaggerResponseExample(404, typeof(JobNotFoundProblemDetailsExample))]
+    [SwaggerResponseExample(422, typeof(CommandValidationProblemDetailsExample))]
     public async Task<IActionResult> UpdateJob(
-        [FromRoute] long id,
-        [FromBody] object request,
+        [FromRoute] string id,
+        [FromBody] UpdateJobRequestModel request,
         CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var model = request.ToUpdateJobRequest(id);
+        var job = await jobsService.UpdateJobAsync(model, cancellationToken);
+        return Ok(job.ToJobResponseModel());
     }
 }

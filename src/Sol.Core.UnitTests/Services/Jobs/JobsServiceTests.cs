@@ -202,7 +202,7 @@ public static class JobsServiceTests
             var sut = CreateSut();
             var job = CreateJob();
             JobsRepository.GetByIdAsync(job.Id, Arg.Any<CancellationToken>()).Returns(job);
-            var request = new UpdateJobRequest(job.Id, DateTime.UtcNow, "InProgress", null, null);
+            var request = new UpdateJobRequest(job.Id, "InProgress", null, null);
 
             await sut.UpdateJobAsync(request, TestContext.Current.CancellationToken);
 
@@ -213,7 +213,7 @@ public static class JobsServiceTests
         public async Task PropagatesValidationException_WhenValidationFails()
         {
             var sut = CreateSut();
-            var request = new UpdateJobRequest("job-id", DateTime.UtcNow, "InProgress", null, null);
+            var request = new UpdateJobRequest("job-id", "InProgress", null, null);
             Validator.ValidateCommandAsync(request, Arg.Any<CancellationToken>())
                 .Returns(Task.FromException(new CommandValidationException([])));
 
@@ -225,7 +225,7 @@ public static class JobsServiceTests
         public async Task ThrowsNotFoundException_WhenJobDoesNotExist()
         {
             var sut = CreateSut();
-            var request = new UpdateJobRequest("missing-id", DateTime.UtcNow, "InProgress", null, null);
+            var request = new UpdateJobRequest("missing-id", "InProgress", null, null);
             JobsRepository.GetByIdAsync("missing-id", Arg.Any<CancellationToken>()).Returns((Job?)null);
 
             await Assert.ThrowsAsync<NotFoundException>(() =>

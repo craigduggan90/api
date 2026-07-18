@@ -63,7 +63,7 @@ public class JobsService(IReadOnlyJobsRepository repository, IUnitOfWork unitOfW
                   throw new NotFoundException(typeof(Job), request.Id);
         
         var status = Enum.Parse<JobStatusEnum>(request.Status, true);
-        job.Update(request.EventTime, status, request.ErrorCode, request.ErrorMessage);
+        job.Update(status, request.ErrorCode, request.ErrorMessage);
 
         if (!job.IsDirty)
             return JobModel.FromEntity(job);

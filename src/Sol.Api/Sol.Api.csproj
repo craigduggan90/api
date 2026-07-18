@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <InternalsVisibleTo Include="Sol.Api.UnitTests" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Sol.Api.Contracts\Sol.Api.Contracts.csproj" />

@@ -28,7 +28,7 @@ public abstract class JobsRepositoryTestsBase : DatabaseAwareTestBase
             var eventTime = BaseDate.AddDays(i - 1).AddYears(1);
 
             using var updateDtFix = new DateTimeOffsetProviderContext(eventTime);
-            job.Update(eventTime, status, errorCode, errorMessage);
+            job.Update(status, errorCode, errorMessage);
 
             return job;
         })

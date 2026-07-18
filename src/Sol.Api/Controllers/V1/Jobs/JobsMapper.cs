@@ -9,13 +9,19 @@ namespace Sol.Api.Controllers.V1.Jobs;
 
 public static class JobsMapper
 {
-    public static JobResponseModel ToJobResponseModel(this JobModel model)
-        => new(
+    public static JobResponseModel ToJobResponseModel(this JobModel model) =>
+        new(model.Id, model.Status, model.ToJobErrorResponseModel());
+    
+    public static JobResponseDetailModel ToJobResponseDetailModel(this JobModel model) => 
+        new(
             model.Id,
+            model.IdempotencyKey,
+            model.Type,
             model.Status,
-            model.ErrorCode is not null 
-                ? new JobErrorResponseModel(model.ErrorCode, model.ErrorMessage ?? "An unexpected error occurred.") 
-                : null);
+            model.Parameters?.Deserialize<JsonElement>(),
+            model.DateCreated,
+            model.DateModified,
+            model.ToJobErrorResponseModel());
 
     public static CreateJobRequest ToCreateJobRequest(
         this CreateJobRequestModel model,
@@ -26,6 +32,10 @@ public static class JobsMapper
             model.Parameters is null || model.Parameters.Value.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined
                 ? null
                 : model.Parameters.Value.GetRawText());
+
+    public static UpdateJobRequest ToUpdateJobRequest(
+        this UpdateJobRequestModel model,
+        string id) => new UpdateJobRequest(id, model.Status, model.ErrorCode, model.ErrorMessage);
     
     public static GetJobsRequest ToGetJobsRequestRequest(this GetJobsRequestModel model) =>
         new(model.Type,
@@ -37,4 +47,9 @@ public static class JobsMapper
             model.ModifiedTo,
             model.Cursor,
             model.PageSize);
+
+    private static JobErrorResponseModel? ToJobErrorResponseModel(this JobModel model) =>
+        model.ErrorCode is not null
+            ? new JobErrorResponseModel(model.ErrorCode, model.ErrorMessage ?? "An unexpected error occurred.")
+            : null;
 }

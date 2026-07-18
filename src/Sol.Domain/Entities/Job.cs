@@ -29,7 +29,6 @@ public class Job : EntityBase
         => new { Id, IdempotencyKey, Type, Status, ErrorCode, DateCreated, DateModified };
 
     public void Update(
-        DateTime eventTime,
         JobStatusEnum status, 
         string? errorCode, 
         string? errorMessage)

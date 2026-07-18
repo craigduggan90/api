@@ -23,7 +23,7 @@ public static class JobsFilterHelperTests
             var errorCode = status == JobStatusEnum.Failed ? $"ERR-{i:D3}" : null;
             var errorMessage = status == JobStatusEnum.Failed ? $"error-message-{i:D3}" : null;
 
-            job.Update(BaseDate.AddDays(i - 1), status, errorCode, errorMessage);
+            job.Update(status, errorCode, errorMessage);
             return job;
         })
         .AsQueryable();

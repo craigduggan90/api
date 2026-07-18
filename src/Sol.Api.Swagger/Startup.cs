@@ -22,7 +22,7 @@ public static class Startup
             options.ExampleFilters();
         });
     
-        builder.Services.AddSwaggerExamplesFromAssemblyOf<JobResponseModelExample>();
+        builder.Services.AddSwaggerExamplesFromAssemblyOf<JobResponseDetailModelExample>();
 
         return builder;
     }

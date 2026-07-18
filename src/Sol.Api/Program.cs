@@ -1,3 +1,4 @@
+using Sol.Api.Infrastructure.Errors;
 using Sol.Api.Swagger;
 using Sol.Common;
 using Sol.Core;
@@ -8,7 +9,8 @@ builder
     .AddCommonServices()
     .AddCoreServices()
     .AddDataServices()
-    .AddSwaggerDocumentation();
+    .AddSwaggerDocumentation()
+    .AddErrorHandling();
 
 builder.Services.AddControllers();
 builder.Services.AddRouting();
@@ -16,6 +18,7 @@ builder.Services.AddRouting();
 var app = builder.Build();
 
 app.UseSwaggerDocumentation();
+app.UseErrorHandling();
 
 app.UseRouting();
 app.MapControllers();

@@ -33,7 +33,7 @@ public static class JobsRepositoryTests
         public async Task Should_UpdateEntity_InChangeTracker()
         {
             var entity = Context.Jobs.Skip(15).First();
-            entity.Update(BaseDate.AddDays(31), JobStatusEnum.InProgress, null, null);
+            entity.Update(JobStatusEnum.InProgress, null, null);
 
             var sut = CreateSut();
             _ = await sut.UpdateAsync(entity, TestContext.Current.CancellationToken);
