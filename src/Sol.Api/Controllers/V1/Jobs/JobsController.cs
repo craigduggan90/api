@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Sol.Api.Contracts.V1.RequestModels;
 using Sol.Api.Contracts.V1.ResponseModels;
+using Sol.Api.Infrastructure;
 using Sol.Api.Swagger.Examples.V1.Common;
 using Sol.Api.Swagger.Examples.V1.Jobs;
 using Sol.Common.Extensions;
@@ -47,7 +48,7 @@ public class JobsController(IJobsService jobsService) : ControllerBase
     [SwaggerResponseExample(202, typeof(JobResponseModelExample))]
     public async Task<IActionResult> CreateJob(
         [FromBody] CreateJobRequestModel request,
-        [FromHeader] string idempotency,
+        [FromHeader(Name = Constants.IdempotencyHeaderKey)] string? idempotency,
         CancellationToken cancellationToken)
     {
         var model = request.ToCreateJobRequest(idempotency);

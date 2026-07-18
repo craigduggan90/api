@@ -25,9 +25,9 @@ public static class JobsMapper
 
     public static CreateJobRequest ToCreateJobRequest(
         this CreateJobRequestModel model,
-        string idempotencyKey)
+        string? idempotencyKey)
         => new(
-            idempotencyKey,
+            idempotencyKey ?? string.Empty,
             model.Type,
             model.Parameters is null || model.Parameters.Value.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined
                 ? null
