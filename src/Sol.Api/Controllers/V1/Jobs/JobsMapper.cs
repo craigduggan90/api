@@ -10,12 +10,13 @@ namespace Sol.Api.Controllers.V1.Jobs;
 public static class JobsMapper
 {
     public static JobResponseModel ToJobResponseModel(this JobModel model) =>
-        new(model.Id, model.Status, model.ToJobErrorResponseModel());
+        new(model.Id, model.Status, model.IdempotencyKey, model.ConcurrencyToken, model.ToJobErrorResponseModel());
     
     public static JobResponseDetailModel ToJobResponseDetailModel(this JobModel model) => 
         new(
             model.Id,
             model.IdempotencyKey,
+            model.ConcurrencyToken,
             model.Type,
             model.Status,
             model.Parameters?.Deserialize<JsonElement>(),
@@ -35,7 +36,9 @@ public static class JobsMapper
 
     public static UpdateJobRequest ToUpdateJobRequest(
         this UpdateJobRequestModel model,
-        string id) => new UpdateJobRequest(id, model.Status, model.ErrorCode, model.ErrorMessage);
+        string id,
+        string? concurrencyToken) => 
+        new(id, concurrencyToken ?? string.Empty, model.Status, model.ErrorCode, model.ErrorMessage);
     
     public static GetJobsRequest ToGetJobsRequestRequest(this GetJobsRequestModel model) =>
         new(model.Type,

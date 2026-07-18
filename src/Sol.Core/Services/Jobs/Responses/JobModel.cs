@@ -5,6 +5,7 @@ namespace Sol.Core.Services.Jobs.Responses;
 public record JobModel(
     string Id,
     string IdempotencyKey,
+    string ConcurrencyToken,
     string Type,
     string Status,
     string? Parameters,
@@ -17,6 +18,7 @@ public record JobModel(
         => new(
             Id: job.Id,
             IdempotencyKey: job.IdempotencyKey,
+            ConcurrencyToken: job.ConcurrencyToken,
             Type: job.Type.ToString(),
             Status: job.Status.ToString(),
             Parameters: job.Parameters,

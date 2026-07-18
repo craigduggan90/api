@@ -9,6 +9,7 @@ public static class Startup
     public static IHostApplicationBuilder AddErrorHandling(this IHostApplicationBuilder builder)
     {
         builder.Services
+            .AddExceptionHandler<MissingHeaderExceptionHandler>()
             .AddExceptionHandler<NotFoundExceptionHandler>()
             .AddExceptionHandler<ValidationExceptionHandler>()
             .AddExceptionHandler<UnhandledExceptionHandler>()

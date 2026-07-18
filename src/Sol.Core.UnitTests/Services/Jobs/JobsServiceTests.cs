@@ -18,6 +18,8 @@ public static class JobsServiceTests
         protected readonly IJobsRepository JobsRepository = Substitute.For<IJobsRepository>();
         protected readonly IValidationService Validator = Substitute.For<IValidationService>();
 
+        protected const string ConcurrencyToken = "6a56255b5d61226bc0e680b3c4d29d42";
+
         protected JobsServiceTestsBase()
         {
             UnitOfWork.Jobs.Returns(JobsRepository);
@@ -202,7 +204,7 @@ public static class JobsServiceTests
             var sut = CreateSut();
             var job = CreateJob();
             JobsRepository.GetByIdAsync(job.Id, Arg.Any<CancellationToken>()).Returns(job);
-            var request = new UpdateJobRequest(job.Id, "InProgress", null, null);
+            var request = new UpdateJobRequest(job.Id, ConcurrencyToken, "InProgress", null, null);
 
             await sut.UpdateJobAsync(request, TestContext.Current.CancellationToken);
 
@@ -213,7 +215,7 @@ public static class JobsServiceTests
         public async Task PropagatesValidationException_WhenValidationFails()
         {
             var sut = CreateSut();
-            var request = new UpdateJobRequest("job-id", "InProgress", null, null);
+            var request = new UpdateJobRequest("job-id", ConcurrencyToken, "InProgress", null, null);
             Validator.ValidateCommandAsync(request, Arg.Any<CancellationToken>())
                 .Returns(Task.FromException(new CommandValidationException([])));
 
@@ -225,7 +227,7 @@ public static class JobsServiceTests
         public async Task ThrowsNotFoundException_WhenJobDoesNotExist()
         {
             var sut = CreateSut();
-            var request = new UpdateJobRequest("missing-id", "InProgress", null, null);
+            var request = new UpdateJobRequest("missing-id", ConcurrencyToken, "InProgress", null, null);
             JobsRepository.GetByIdAsync("missing-id", Arg.Any<CancellationToken>()).Returns((Job?)null);
 
             await Assert.ThrowsAsync<NotFoundException>(() =>

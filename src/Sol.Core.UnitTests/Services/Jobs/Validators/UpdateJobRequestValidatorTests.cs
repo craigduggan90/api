@@ -12,10 +12,11 @@ public static class UpdateJobRequestValidatorTests
 
         protected static UpdateJobRequest CreateRequest(
             string id = "job-id-001",
+            string concurrencyToken = "",
             string status = "InProgress",
             string? errorCode = null,
             string? errorMessage = null)
-            => new(id, status, errorCode, errorMessage);
+            => new(id, concurrencyToken, status, errorCode, errorMessage);
     }
 
     public class Id : UpdateJobRequestValidatorTestsBase

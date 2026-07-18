@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Sol.Api.Attributes;
 using Sol.Api.Contracts.V1.RequestModels;
 using Sol.Api.Contracts.V1.ResponseModels;
 using Sol.Api.Infrastructure;
@@ -42,6 +43,7 @@ public class JobsController(IJobsService jobsService) : ControllerBase
     }
 
     [HttpPost]
+    [RequiresHeader(Constants.IdempotencyHeaderKey)]
     [SwaggerRequestExample(typeof(CreateJobRequestModel), typeof(CreateJobRequestModelExample))]
     [ProducesResponseType<JobResponseModel>(202)]
     [ProducesResponseType<ProblemDetails>(422)]
@@ -57,18 +59,22 @@ public class JobsController(IJobsService jobsService) : ControllerBase
     }
         
     [HttpPut("{id}")]
+    [RequiresHeader(Constants.IfMatchHeaderKey)] 
     [ProducesResponseType<JobResponseModel>(202)]
     [ProducesResponseType<ProblemDetails>(404)]
+    [ProducesResponseType<ProblemDetails>(412)]
+    [ProducesResponseType<ProblemDetails>(428)]
     [ProducesResponseType<ProblemDetails>(422)]
     [SwaggerResponseExample(200, typeof(JobResponseModelExample))]
     [SwaggerResponseExample(404, typeof(JobNotFoundProblemDetailsExample))]
     [SwaggerResponseExample(422, typeof(CommandValidationProblemDetailsExample))]
     public async Task<IActionResult> UpdateJob(
         [FromRoute] string id,
+        [FromHeader(Name = Constants.IfMatchHeaderKey)] string? concurrencyToken,
         [FromBody] UpdateJobRequestModel request,
         CancellationToken cancellationToken)
     {
-        var model = request.ToUpdateJobRequest(id);
+        var model = request.ToUpdateJobRequest(id, concurrencyToken);
         var job = await jobsService.UpdateJobAsync(model, cancellationToken);
         return Ok(job.ToJobResponseModel());
     }
