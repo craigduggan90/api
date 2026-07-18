@@ -61,6 +61,8 @@ public class JobsService(IReadOnlyJobsRepository repository, IUnitOfWork unitOfW
         
         var job = await unitOfWork.Jobs.GetByIdAsync(request.Id, cancellationToken) ??
                   throw new NotFoundException(typeof(Job), request.Id);
+
+        ConcurrencyTokenMismatchException.ThrowIfMismatch(request.ConcurrencyToken, job.ConcurrencyToken);
         
         var status = Enum.Parse<JobStatusEnum>(request.Status, true);
         job.Update(status, request.ErrorCode, request.ErrorMessage);
