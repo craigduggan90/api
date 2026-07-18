@@ -16,5 +16,5 @@ public class JobResponseDetailModelExample : IExamplesProvider<JobResponseDetail
             new { Id = 1010 },
             new DateTime(2026, 7, 18, 13, 37, 14, DateTimeKind.Utc),
             new DateTime(2026, 7, 18, 14, 11, 25, DateTimeKind.Utc),
-            new JobErrorResponseModel("JobTargetNotFound", "No UserGroup was found with identifier: 1010."));
+            new JobResponseErrorModel("JobTargetNotFound", "No UserGroup was found with identifier: 1010."));
 }

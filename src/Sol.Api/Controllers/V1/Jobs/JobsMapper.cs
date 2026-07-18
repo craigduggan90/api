@@ -51,8 +51,8 @@ public static class JobsMapper
             model.Cursor,
             model.PageSize);
 
-    private static JobErrorResponseModel? ToJobErrorResponseModel(this JobModel model) =>
+    private static JobResponseErrorModel? ToJobErrorResponseModel(this JobModel model) =>
         model.ErrorCode is not null
-            ? new JobErrorResponseModel(model.ErrorCode, model.ErrorMessage ?? "An unexpected error occurred.")
+            ? new JobResponseErrorModel(model.ErrorCode, model.ErrorMessage ?? "An unexpected error occurred.")
             : null;
 }

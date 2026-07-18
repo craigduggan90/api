@@ -3,6 +3,7 @@ using Sol.Api.Swagger;
 using Sol.Common;
 using Sol.Core;
 using Sol.Data;
+using System.Diagnostics.CodeAnalysis;
 
 var builder = WebApplication.CreateBuilder(args);
 builder
@@ -24,3 +25,7 @@ app.UseRouting();
 app.MapControllers();
 
 app.Run();
+
+/// <summary>This partial class is required for testing and exclusion from test coverage metrics.</summary>
+[ExcludeFromCodeCoverage]
+public partial class Program;

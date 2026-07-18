@@ -9,5 +9,5 @@ public record JobResponseDetailModel(
     object? Parameters,
     DateTime DateCreated,
     DateTime DateLastModified,
-    JobErrorResponseModel? Error = null)
+    JobResponseErrorModel? Error = null)
     : JobResponseModel(Id, Status, IdempotencyKey, ConcurrencyToken, Error);

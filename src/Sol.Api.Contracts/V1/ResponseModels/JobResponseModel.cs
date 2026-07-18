@@ -5,4 +5,4 @@ public record JobResponseModel(
     string Status, 
     string IdempotencyKey,
     string ConcurrencyToken, 
-    JobErrorResponseModel? Error = null);
+    JobResponseErrorModel? Error = null);
