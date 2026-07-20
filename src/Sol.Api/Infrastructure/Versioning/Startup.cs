@@ -1,3 +1,5 @@
+using Asp.Versioning;
+using Sol.Common;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Sol.Api.Infrastructure.Versioning;
@@ -11,7 +13,9 @@ public static class Startup
             {
                 options.AssumeDefaultVersionWhenUnspecified = false;
                 options.ReportApiVersions = true;
-                options.ApiVersionReader = new ExclusiveApiVersionReader();
+                options.ApiVersionReader = ApiVersionReader.Combine(
+                    new UrlSegmentApiVersionReader(),
+                    new HeaderApiVersionReader(Constants.ApiVersionHeaderKey)); 
             })
             .AddMvc()
             .AddApiExplorer(options =>
