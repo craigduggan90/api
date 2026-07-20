@@ -15,7 +15,7 @@ public static class Startup
                 options.ReportApiVersions = true;
                 options.ApiVersionReader = ApiVersionReader.Combine(
                     new UrlSegmentApiVersionReader(),
-                    new HeaderApiVersionReader(Constants.ApiVersionHeaderKey)); 
+                    new HeaderApiVersionReader(Constants.ApiVersionHeaderKey));
             })
             .AddMvc()
             .AddApiExplorer(options =>
