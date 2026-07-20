@@ -12,7 +12,13 @@ public static class Startup
     {
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.ConfigureOptions<VersionedSwaggerOptions>();
-        builder.Services.AddSwaggerGen(options => options.ExampleFilters());
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.ExampleFilters();
+            options.DocInclusionPredicate((docName, apiDesc) =>
+                apiDesc.GroupName == docName
+                && (apiDesc.ActionDescriptor.AttributeRouteInfo?.Template?.Contains("apiVersion") ?? false));
+        });
         builder.Services.AddSwaggerExamplesFromAssemblyOf<JobResponseDetailModelExample>();
 
         return builder;

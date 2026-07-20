@@ -6,6 +6,7 @@ namespace Sol.Api.Controllers.V1.Abstract;
 
 [ApiController]
 [ApiVersion(1.0)]
+[Route("api/[controller]")]
 [Route("api/v{version:apiVersion}/[controller]")]
 public abstract class SolControllerBase : ControllerBase
 {
