@@ -1,10 +1,12 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Sol.Common;
 
 namespace Sol.Api.Controllers.V1.Abstract;
 
 [ApiController]
-[Route("api/v1/[controller]")]
+[ApiVersion(1.0)]
+[Route("api/v{version:apiVersion}/[controller]")]
 public abstract class SolControllerBase : ControllerBase
 {
     protected void SetEtagResponseHeader(string value)

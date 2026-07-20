@@ -1,3 +1,4 @@
+using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
@@ -11,17 +12,8 @@ public static class Startup
     public static WebApplicationBuilder AddSwaggerDocumentation(this WebApplicationBuilder builder)
     {
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(options =>
-        {
-            options.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "Sol API",
-                Version = "v1",
-                Description = "A facade API for enqueuing and tracking long-running jobs."
-            });
-            options.ExampleFilters();
-        });
-
+        builder.Services.ConfigureOptions<VersionedSwaggerOptions>();
+        builder.Services.AddSwaggerGen(options => options.ExampleFilters());
         builder.Services.AddSwaggerExamplesFromAssemblyOf<JobResponseDetailModelExample>();
 
         return builder;
@@ -29,8 +21,18 @@ public static class Startup
 
     public static WebApplication UseSwaggerDocumentation(this WebApplication app)
     {
+        var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
         app.UseSwagger();
-        app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Sol API v1"));
+        app.UseSwaggerUI(options =>
+        {
+            foreach (var description in provider.ApiVersionDescriptions)
+            {
+                options.SwaggerEndpoint(
+                    $"/swagger/{description.GroupName}/swagger.json",
+                    $"Sol API {description.GroupName}");
+            }
+        });
 
         return app;
     }

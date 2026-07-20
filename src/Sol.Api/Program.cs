@@ -1,4 +1,5 @@
 using Sol.Api.Infrastructure.Errors;
+using Sol.Api.Infrastructure.Versioning;
 using Sol.Api.Swagger;
 using Sol.Common;
 using Sol.Core;
@@ -10,6 +11,7 @@ builder
     .AddCommonServices()
     .AddCoreServices()
     .AddDataServices()
+    .AddVersioning()
     .AddSwaggerDocumentation()
     .AddErrorHandling();
 
