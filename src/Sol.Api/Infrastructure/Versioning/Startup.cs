@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using Sol.Common;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Sol.Api.Infrastructure.Versioning;

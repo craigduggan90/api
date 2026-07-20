@@ -13,6 +13,8 @@ public class RequiresScopeAttribute(string scope) : ActionFilterAttribute
             || !values.ToString()
                 .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
                 .Contains(scope, StringComparer.OrdinalIgnoreCase))
+        {
             throw new MissingScopeException(scope);
+        }
     }
 }

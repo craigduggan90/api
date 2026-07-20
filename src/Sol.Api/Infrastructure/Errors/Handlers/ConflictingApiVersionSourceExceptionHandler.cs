@@ -11,8 +11,8 @@ public class ConflictingApiVersionSourceExceptionHandler : IExceptionHandler
     internal const int StatusCode = 400;
 
     public async ValueTask<bool> TryHandleAsync(
-        HttpContext httpContext, 
-        Exception exception, 
+        HttpContext httpContext,
+        Exception exception,
         CancellationToken cancellationToken)
     {
         if (exception is not ConflictingApiVersionSourceException typedException)

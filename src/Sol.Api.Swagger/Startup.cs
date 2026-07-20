@@ -1,7 +1,6 @@
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi;
 using Sol.Api.Swagger.Examples.V1.Jobs;
 using Swashbuckle.AspNetCore.Filters;
 
