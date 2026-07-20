@@ -3,6 +3,7 @@ using Sol.Api.Attributes;
 using Sol.Api.Contracts.V1.RequestModels;
 using Sol.Api.Contracts.V1.ResponseModels;
 using Sol.Api.Controllers.V1.Abstract;
+using Sol.Api.Infrastructure;
 using Sol.Api.Swagger.Examples.V1.Common;
 using Sol.Api.Swagger.Examples.V1.Jobs;
 using Sol.Common;
@@ -16,6 +17,7 @@ namespace Sol.Api.Controllers.V1.Jobs;
 public class JobsController(IJobsService jobsService) : SolControllerBase
 {
     [HttpGet]
+    [RequiresScope(Scopes.Jobs.Read)]
     [ProducesResponseType<PagedList<JobResponseModel>>(200)]
     [ProducesResponseType<ProblemDetails>(400)]
     [SwaggerResponseExample(200, typeof(JobResponseModelPageExample))]
@@ -29,6 +31,7 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
     }
 
     [HttpGet("{id}")]
+    [RequiresScope(Scopes.Jobs.Read)]
     [ProducesResponseType<JobResponseDetailModel>(200)]
     [ProducesResponseType<ProblemDetails>(404)]
     [SwaggerResponseExample(200, typeof(JobResponseDetailModelExample))]
@@ -43,6 +46,7 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
     }
 
     [HttpPost]
+    [RequiresScope(Scopes.Jobs.Enqueue)]
     [RequiresHeader(Constants.IdempotencyHeaderKey)]
     [SwaggerRequestExample(typeof(CreateJobRequestModel), typeof(CreateJobRequestModelExample))]
     [ProducesResponseType<JobResponseModel>(202)]
@@ -63,6 +67,7 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
     }
 
     [HttpPut("{id}")]
+    [RequiresScope(Scopes.Jobs.Modify)]
     [RequiresHeader(Constants.IfMatchHeaderKey)]
     [ProducesResponseType<JobResponseModel>(200)]
     [ProducesResponseType<ProblemDetails>(404)]
