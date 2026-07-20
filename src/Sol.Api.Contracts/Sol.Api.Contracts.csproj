@@ -10,8 +10,4 @@
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Refit" Version="[13.0.0,)" />
-  </ItemGroup>
-
 </Project>
