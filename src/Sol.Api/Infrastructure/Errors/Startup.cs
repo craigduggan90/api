@@ -10,6 +10,7 @@ public static class Startup
     {
         builder.Services
             .AddExceptionHandler<MissingHeaderExceptionHandler>()
+            .AddExceptionHandler<MissingScopeExceptionHandler>()
             .AddExceptionHandler<NotFoundExceptionHandler>()
             .AddExceptionHandler<ValidationExceptionHandler>()
             .AddExceptionHandler<ConcurrencyTokenMismatchExceptionHandler>()
