@@ -46,7 +46,7 @@ public static partial class JobsControllerTests
         }
 
         [Fact]
-        public async Task ShouldReturnUnprocessableEntity_WhenPageSizeIsOutOfRange()
+        public async Task ShouldReturnBadRequest_WhenPageSizeIsOutOfRange()
         {
             var url = WithQuery(Url, ("PageSize", "0"));
             var request = CreateRequest(HttpMethod.Get, url, scopes: Scopes.Jobs.Read);
