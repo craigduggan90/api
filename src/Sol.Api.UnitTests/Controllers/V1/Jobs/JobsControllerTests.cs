@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -32,7 +33,7 @@ public static class JobsControllerTests
         protected JobsController GetOrCreateSut() =>
             _sut ??= new JobsController(JobsService)
             {
-                ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() }
+                ControllerContext = new ControllerContext { HttpContext = CreateHttpContext() }
             };
 
         protected JobModel GetJobModel(
@@ -71,6 +72,13 @@ public static class JobsControllerTests
         {
             GetOrCreateSut().Response.Headers.TryGetValue(Constants.ETagHeaderKey, out var actual);
             Assert.Equal(expected, Assert.Single(actual)?.Trim('"'));
+        }
+
+        private static DefaultHttpContext CreateHttpContext()
+        {
+            var context = new DefaultHttpContext();
+            context.Features.Set<IApiVersioningFeature>(new ApiVersioningFeature(context) { RequestedApiVersion = new ApiVersion(1, 0) });
+            return context;
         }
     }
 

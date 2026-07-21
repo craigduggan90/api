@@ -63,7 +63,14 @@ public class JobsController(IJobsService jobsService) : SolControllerBase
         var model = request.ToCreateJobRequest(idempotency);
         var job = await jobsService.CreateJobAsync(model, cancellationToken);
         SetEtagResponseHeader(job.ConcurrencyToken);
-        return AcceptedAtAction(nameof(GetJobById), new { id = job.Id }, job.ToJobResponseModel());
+        return AcceptedAtAction(
+            nameof(GetJobById),
+            new
+            {
+                id = job.Id,
+                version = HttpContext.RequestedApiVersion?.ToString()
+            },
+            job.ToJobResponseModel());
     }
 
     [HttpPut("{id}")]

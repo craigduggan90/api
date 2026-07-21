@@ -15,13 +15,12 @@ namespace Sol.Data.Services;
 public class UnitOfWork(IApiDbContextFactory factory) : IUnitOfWork, IDisposable, IAsyncDisposable
 {
     private ApiDbContext? _context;
-    private IJobsRepository? _jobs;
 
     /// <summary>The database context for this unit of work.</summary>
     private ApiDbContext Context => _context ??= factory.CreateDbContext(ContextType.ReadWrite);
 
     /// <inheritdoc />
-    public IJobsRepository Jobs => _jobs ??= new JobsRepository(Context);
+    public IJobsRepository Jobs => field ??= new JobsRepository(Context);
 
     /// <inheritdoc />
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
