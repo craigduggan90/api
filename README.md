@@ -23,3 +23,11 @@ dotnet ef database update --project ./Sol.Data --startup-project ./Sol.Api
 > Before: ```"Reader": "Data Source=../../sol.db;mode=ReadOnly",```
 > 
 > After: ```"Reader": "Data Source=../../sol.db",```
+>
+> Or provide it in the ef tools command:
+> ```
+> dotnet ef migrations remove \
+>   --project ./Sol.Data \
+>   --startup-project ./Sol.Api \
+>   --connection "Data Source=../../sol.db"
+> ```
